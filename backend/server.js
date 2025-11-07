@@ -11,7 +11,7 @@ const app = express();
 // Abilita Cors
 app.use(
   cors({
-    origin: process.env.CORS_ORIGINS.split(",") || "*",
+    origin: (process.env.CORS_ORIGINS || "*").split(","),
   })
 );
 

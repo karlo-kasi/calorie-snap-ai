@@ -6,4 +6,4 @@ yarn-error.log
 # Environment variables
 .env
 
-TEST-REPORT.md
+TEST_REPORT.md

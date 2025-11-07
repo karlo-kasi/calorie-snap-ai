@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: calorie-snap-backend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./backend/.env
+    restart: unless-stopped
+    networks:
+      - calorie-snap-network
+
+  frontend:
+    build: ./frontend
+    container_name: calorie-snap-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - calorie-snap-network
+
+networks:
+  calorie-snap-network:
+    driver: bridge
