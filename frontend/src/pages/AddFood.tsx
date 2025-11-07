@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Camera, Search, Upload, Plus } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useState, useRef } from 'react';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Camera, Search, Upload, Plus, Loader2} from 'lucide-react';
+import { useToast } from '../hooks/use-toast';
 
 export const AddFood = () => {
   const [foodName, setFoodName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [calories, setCalories] = useState('');
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleManualAdd = () => {
@@ -34,11 +37,112 @@ export const AddFood = () => {
     setCalories('');
   };
 
-  const handlePhotoCapture = () => {
-    toast({
-      title: "Funzionalità in arrivo",
-      description: "Il riconoscimento AI delle immagini sarà disponibile presto!",
+  // Converti File in Base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        // Rimuovi il prefisso data:image/jpeg;base64,
+        const base64Data = base64String.split(',')[1];
+        resolve(base64Data);
+      };
+      reader.onerror = (error) => reject(error);
     });
+  };
+
+  // Invia foto al backend
+  const sendPhotoToBackend = async (file: File) => {
+    setIsAnalyzing(true);
+    
+    try {
+      // Converti in base64
+      const base64Image = await fileToBase64(file);
+      
+      // Determina il tipo MIME
+      const mediaType = file.type || 'image/jpeg';
+
+      console.log('📤 Invio foto al backend...');
+      console.log('   - Tipo:', mediaType);
+      console.log('   - Dimensione base64:', base64Image.length);
+
+      // Chiamata POST al backend
+      const response = await fetch('http://localhost:3000/api/analysis/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageBase64: base64Image,
+          mediaType: mediaType,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Errore durante l\'analisi');
+      }
+
+      console.log('✅ Analisi completata:', data);
+
+      // Mostra i risultati
+      toast({
+        title: "Analisi completata! 🎉",
+        description: `Rilevato: ${data.data.foodItems.map(item => item.name).join(', ')}`,
+      });
+
+      // Puoi popolare i campi con i dati ricevuti
+      if (data.data.foodItems.length > 0) {
+        const firstItem = data.data.foodItems[0];
+        setFoodName(firstItem.name);
+        setCalories(firstItem.calories.toString());
+        setQuantity(firstItem.portion);
+      }
+
+    } catch (error) {
+      console.error('❌ Errore:', error);
+      toast({
+        title: "Errore nell'analisi",
+        description: error instanceof Error ? error.message : 'Riprova più tardi',
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Carica da galleria
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    
+    if (!file) return;
+
+    // Valida il tipo di file
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "File non valido",
+        description: "Carica solo immagini (JPG, PNG, etc.)",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Valida la dimensione (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "File troppo grande",
+        description: "L'immagine deve essere inferiore a 5MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setPhotoFile(file);
+    
+    // Invia al backend
+    await sendPhotoToBackend(file);
   };
 
   return (
@@ -100,7 +204,11 @@ export const AddFood = () => {
           <Card className="p-6">
             <div className="text-center space-y-4">
               <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
-                <Camera className="h-10 w-10 text-primary" />
+                {isAnalyzing ? (
+                  <Loader2 className="h-10 w-10 text-primary animate-spin" />
+                ) : (
+                  <Camera className="h-10 w-10 text-primary" />
+                )}
               </div>
               
               <div>
@@ -110,21 +218,56 @@ export const AddFood = () => {
                 </p>
               </div>
               
+              {/* Input nascosto per file */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              
               <div className="space-y-3">
-                <Button onClick={handlePhotoCapture} className="w-full gradient-energy">
-                  <Camera className="mr-2 h-4 w-4" />
-                  Scatta Foto
+                <Button 
+                  className="w-full gradient-energy"
+                  disabled={isAnalyzing}
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Analisi in corso...
+                    </>
+                  ) : (
+                    <>
+                      <Camera className="mr-2 h-4 w-4" />
+                      Scatta Foto
+                    </>
+                  )}
                 </Button>
                 
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isAnalyzing}
+                >
                   <Upload className="mr-2 h-4 w-4" />
                   Carica da Galleria
                 </Button>
               </div>
               
+              {photoFile && (
+                <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                  <p className="text-sm text-green-700">
+                    ✅ Foto caricata: {photoFile.name}
+                  </p>
+                </div>
+              )}
+              
               <div className="mt-6 p-4 bg-energy/10 rounded-lg">
                 <p className="text-xs text-muted-foreground">
-                  🚀 <strong>Presto disponibile:</strong> Questa funzionalità utilizzerà modelli AI avanzati per riconoscere automaticamente cibi e ingredienti dalle tue foto.
+                  🤖 <strong>Powered by Claude AI:</strong> L'analisi viene effettuata da modelli AI avanzati che riconoscono automaticamente cibi e ingredienti.
                 </p>
               </div>
             </div>
@@ -132,7 +275,7 @@ export const AddFood = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Quick Add Suggestions */}
+      
       <Card className="p-4">
         <h3 className="font-medium mb-3">Cibi Frequenti</h3>
         <div className="grid grid-cols-2 gap-2">
