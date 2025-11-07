@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { FoodCard } from '@/components/FoodCard/FoodCard';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { FoodCard } from '../components/FoodCard/FoodCard';
 import { BookOpen, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, addDays, subDays } from 'date-fns';
 import { it } from 'date-fns/locale';

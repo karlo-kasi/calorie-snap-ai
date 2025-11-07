@@ -44,8 +44,22 @@ export const AddFood = () => {
       reader.readAsDataURL(file);
       reader.onload = () => {
         const base64String = reader.result as string;
+        
+        // 🔍 DEBUG: Mostra la stringa completa prima della pulizia
+        console.log('📸 Base64 RAW (primi 100 caratteri):', base64String.substring(0, 100));
+        
         // Rimuovi il prefisso data:image/jpeg;base64,
         const base64Data = base64String.split(',')[1];
+        
+        // 🔍 DEBUG: Mostra dopo la pulizia
+        console.log('✅ Base64 PULITO (primi 100 caratteri):', base64Data.substring(0, 100));
+        console.log('📊 Lunghezza totale:', base64Data.length);
+        console.log('🔤 Ultimi 10 caratteri:', base64Data.slice(-10));
+        
+        // Verifica caratteri validi
+        const isValidBase64 = /^[A-Za-z0-9+/]*={0,2}$/.test(base64Data);
+        console.log('✓ Base64 valido?', isValidBase64);
+        
         resolve(base64Data);
       };
       reader.onerror = (error) => reject(error);
@@ -87,18 +101,27 @@ export const AddFood = () => {
 
       console.log('✅ Analisi completata:', data);
 
-      // Mostra i risultati
-      toast({
-        title: "Analisi completata! 🎉",
-        description: `Rilevato: ${data.data.foodItems.map(item => item.name).join(', ')}`,
-      });
+      // ✅ CORREZIONE: Usa la struttura corretta
+      if (data.success && data.data) {
+        const analysis = data.data;
+        
+        toast({
+          title: "Analisi completata! 🎉",
+          description: `Rilevato: ${analysis.dishName}`,
+        });
 
-      // Puoi popolare i campi con i dati ricevuti
-      if (data.data.foodItems.length > 0) {
-        const firstItem = data.data.foodItems[0];
-        setFoodName(firstItem.name);
-        setCalories(firstItem.calories.toString());
-        setQuantity(firstItem.portion);
+        // Popola i campi
+        setFoodName(analysis.dishName);
+        setCalories(analysis.calories.toString());
+        setQuantity(analysis.portionSize);
+        
+        // Log dettagli
+        console.log('🍝 Piatto:', analysis.dishName);
+        console.log('📊 Calorie:', analysis.calories);
+        console.log('🥗 Ingredienti:', analysis.ingredients.join(', '));
+        console.log('💪 Proteine:', analysis.macronutrients.proteins + 'g');
+        console.log('🍞 Carboidrati:', analysis.macronutrients.carbohydrates + 'g');
+        console.log('🥑 Grassi:', analysis.macronutrients.fats + 'g');
       }
 
     } catch (error) {
