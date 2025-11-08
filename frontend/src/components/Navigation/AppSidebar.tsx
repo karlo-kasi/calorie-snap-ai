@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Plus, BookOpen, BarChart3, User, Utensils, Settings } from 'lucide-react';
 import {
@@ -12,8 +11,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarSeparator,
-} from '@/components/ui/sidebar';
-
+} from '../../components/ui/sidebar';
 
 const navItems = [
   { to: '/', icon: Home, label: 'Home' },
@@ -27,13 +25,13 @@ export function AppSidebar() {
   const location = useLocation();
   
   return (
-    <Sidebar className="border-r border-border bg-card w-72">
+    <Sidebar collapsible="icon">
       <SidebarHeader className="p-6">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
             <Utensils className="w-6 h-6 text-white" />
           </div>
-          <div>
+          <div className="group-data-[collapsible=icon]:hidden">
             <h2 className="text-xl font-bold text-foreground">CalorieTracker</h2>
             <p className="text-sm text-muted-foreground">Monitora la tua dieta</p>
           </div>
@@ -49,9 +47,10 @@ export function AppSidebar() {
                   <SidebarMenuButton 
                     asChild
                     isActive={location.pathname === item.to}
+                    tooltip={item.label}
                   >
-                    <Link to={item.to} className="flex items-center space-x-3">
-                      <item.icon className="w-5 h-5" />
+                    <Link to={item.to}>
+                      <item.icon />
                       <span>{item.label}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -66,9 +65,9 @@ export function AppSidebar() {
         <SidebarSeparator className="mb-4" />
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/settings" className="flex items-center space-x-3">
-                <Settings className="w-5 h-5" />
+            <SidebarMenuButton asChild tooltip="Impostazioni">
+              <Link to="/settings">
+                <Settings />
                 <span>Impostazioni</span>
               </Link>
             </SidebarMenuButton>

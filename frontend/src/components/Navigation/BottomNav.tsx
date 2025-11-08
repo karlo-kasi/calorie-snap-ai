@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Plus, BookOpen, BarChart3, User } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../lib/utils';
 
 const NavItem = ({ to, icon: Icon, label, isActive }: {
   to: string;

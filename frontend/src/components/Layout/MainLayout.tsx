@@ -1,12 +1,12 @@
 import React from 'react';
 import { BottomNav } from '../Navigation/BottomNav';
 import { AppSidebar } from '../Navigation/AppSidebar';
-import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { SidebarProvider, SidebarInset, SidebarTrigger } from '../../components/ui/sidebar';
+import { useIsMobile } from '../../hooks/use-mobile';
 import { Menu, User } from 'lucide-react';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { ThemeToggle } from '../../components/ui/theme-toggle';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 
 interface MainLayoutProps {
   children: React.ReactNode;

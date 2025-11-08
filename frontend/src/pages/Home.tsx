@@ -1,11 +1,11 @@
 import React from 'react';
-import { CalorieCard } from '@/components/CalorieCard/CalorieCard';
-import { FoodCard } from '@/components/FoodCard/FoodCard';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { CalorieCard } from '../components/CalorieCard/CalorieCard';
+import { FoodCard } from '../components/FoodCard/FoodCard';
+import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
 import { Plus, Camera, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import heroImage from '@/assets/hero-food.jpg';
+import heroImage from '../assets/hero-food.jpg';
 
 export const Home = () => {
   // Mock data - in real app this would come from state/API

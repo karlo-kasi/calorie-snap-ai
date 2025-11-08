@@ -6,6 +6,8 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Camera, Search, Upload, Plus, Loader2} from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { fileToBase64 } from '../services/fileToBase64';
+import { analysisService } from '../services/API';
 
 export const AddFood = () => {
   const [foodName, setFoodName] = useState('');
@@ -37,34 +39,6 @@ export const AddFood = () => {
     setCalories('');
   };
 
-  // Converti File in Base64
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        
-        // 🔍 DEBUG: Mostra la stringa completa prima della pulizia
-        console.log('📸 Base64 RAW (primi 100 caratteri):', base64String.substring(0, 100));
-        
-        // Rimuovi il prefisso data:image/jpeg;base64,
-        const base64Data = base64String.split(',')[1];
-        
-        // 🔍 DEBUG: Mostra dopo la pulizia
-        console.log('✅ Base64 PULITO (primi 100 caratteri):', base64Data.substring(0, 100));
-        console.log('📊 Lunghezza totale:', base64Data.length);
-        console.log('🔤 Ultimi 10 caratteri:', base64Data.slice(-10));
-        
-        // Verifica caratteri validi
-        const isValidBase64 = /^[A-Za-z0-9+/]*={0,2}$/.test(base64Data);
-        console.log('✓ Base64 valido?', isValidBase64);
-        
-        resolve(base64Data);
-      };
-      reader.onerror = (error) => reject(error);
-    });
-  };
 
   // Invia foto al backend
   const sendPhotoToBackend = async (file: File) => {
@@ -72,34 +46,7 @@ export const AddFood = () => {
     
     try {
       // Converti in base64
-      const base64Image = await fileToBase64(file);
-      
-      // Determina il tipo MIME
-      const mediaType = file.type || 'image/jpeg';
-
-      console.log('📤 Invio foto al backend...');
-      console.log('   - Tipo:', mediaType);
-      console.log('   - Dimensione base64:', base64Image.length);
-
-      // Chiamata POST al backend
-      const response = await fetch('http://localhost:3000/api/analysis/upload', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          imageBase64: base64Image,
-          mediaType: mediaType,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Errore durante l\'analisi');
-      }
-
-      console.log('✅ Analisi completata:', data);
+      const data = await analysisService.analyzeImageFile(file);
 
       // ✅ CORREZIONE: Usa la struttura corretta
       if (data.success && data.data) {
