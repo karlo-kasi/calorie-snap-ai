@@ -25,33 +25,42 @@ export function AppSidebar() {
   const location = useLocation();
   
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="p-6">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
+    <Sidebar collapsible="icon" className="transition-all duration-300 ease-in-out">
+      <SidebarHeader className="p-4 transition-all duration-300">
+        <Link to="/" className="flex items-center gap-3 group/logo w-full min-h-[48px]">
+          {/* Logo con transizione - centrato quando collassata */}
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shrink-0 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group-data-[collapsible=icon]/sidebar-wrapper:mx-auto">
             <Utensils className="w-6 h-6 text-white" />
           </div>
-          <div className="group-data-[collapsible=icon]:hidden">
-            <h2 className="text-xl font-bold text-foreground">CalorieTracker</h2>
-            <p className="text-sm text-muted-foreground">Monitora la tua dieta</p>
+
+          {/* Testo con fade out - nascosto quando sidebar è collapsed */}
+          <div className="flex flex-col overflow-hidden transition-all duration-300 group-data-[collapsible=icon]/sidebar-wrapper:w-0 group-data-[collapsible=icon]/sidebar-wrapper:opacity-0">
+            <h2 className="text-xl font-bold text-foreground whitespace-nowrap">CalorieTracker</h2>
+            <p className="text-sm text-muted-foreground whitespace-nowrap">Monitora la tua dieta</p>
           </div>
-        </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-2 px-2 group-data-[collapsible=icon]/sidebar-wrapper:px-0 group-data-[collapsible=icon]/sidebar-wrapper:space-y-3">
               {navItems.map((item) => (
-                <SidebarMenuItem key={item.to}>
-                  <SidebarMenuButton 
+                <SidebarMenuItem
+                  key={item.to}
+                  className="group-data-[collapsible=icon]/sidebar-wrapper:flex group-data-[collapsible=icon]/sidebar-wrapper:justify-center"
+                >
+                  <SidebarMenuButton
                     asChild
                     isActive={location.pathname === item.to}
                     tooltip={item.label}
+                    className="group-data-[collapsible=icon]/sidebar-wrapper:h-12 group-data-[collapsible=icon]/sidebar-wrapper:w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:p-0"
                   >
-                    <Link to={item.to}>
-                      <item.icon />
-                      <span>{item.label}</span>
+                    <Link to={item.to} className="flex items-center gap-3">
+                      <item.icon className="shrink-0 w-5 h-5 group-data-[collapsible=icon]/sidebar-wrapper:w-6 group-data-[collapsible=icon]/sidebar-wrapper:h-6" />
+                      <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
+                        {item.label}
+                      </span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -61,14 +70,20 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4">
-        <SidebarSeparator className="mb-4" />
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Impostazioni">
-              <Link to="/settings">
-                <Settings />
-                <span>Impostazioni</span>
+      <SidebarFooter className="p-2">
+        <SidebarSeparator className="mb-2 group-data-[collapsible=icon]/sidebar-wrapper:hidden" />
+        <SidebarMenu className="px-2 group-data-[collapsible=icon]/sidebar-wrapper:px-0">
+          <SidebarMenuItem className="group-data-[collapsible=icon]/sidebar-wrapper:flex group-data-[collapsible=icon]/sidebar-wrapper:justify-center">
+            <SidebarMenuButton
+              asChild
+              tooltip="Impostazioni"
+              className="group-data-[collapsible=icon]/sidebar-wrapper:h-12 group-data-[collapsible=icon]/sidebar-wrapper:w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:p-0"
+            >
+              <Link to="/settings" className="flex items-center gap-3">
+                <Settings className="shrink-0 w-5 h-5 group-data-[collapsible=icon]/sidebar-wrapper:w-6 group-data-[collapsible=icon]/sidebar-wrapper:h-6" />
+                <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
+                  Impostazioni
+                </span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
