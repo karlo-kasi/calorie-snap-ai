@@ -4,13 +4,13 @@ import "dotenv/config";
 import connectDB from "./config/database.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import allRoutes from "./routes/routes.js";
+import authRoutes from "./routes/authRoutes.js"
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
 // Abilita Cors
-app.use(
-  cors({
+app.use(cors({
     origin: "*",
   })
 );
@@ -25,7 +25,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Usa le rotte definite in routes.js
+app.use("/api/auth", authRoutes)
 app.use("/api", allRoutes);
 
 // 404 Handler

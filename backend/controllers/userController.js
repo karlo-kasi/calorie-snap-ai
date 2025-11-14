@@ -1,5 +1,5 @@
 import Analysis from "../models/Analysis.js";
-import { analyzeFoodImage } from "../services/claudeService.js";
+import {analyzeFoodImage} from "../services/claudeService.js";
 
 /**
  * Controller per caricare un'immagine e analizzarla con Claude AI

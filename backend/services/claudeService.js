@@ -1,6 +1,12 @@
-import anthropic from "../config/claude.js";
+import anthropic from "../config/claude.js"
 
-export const analyzeFoodImage = async (imageBase64, mediaType) => {
+/**
+ * Analizza un'immagine di cibo usando Claude API
+ * @param {string} imageBase64 - Immagine in formato base64
+ * @param {string} mediaType - Tipo MIME dell'immagine (es. 'image/jpeg')
+ * @returns {Object} Risultato dell'analisi
+ */
+export const analyzeFoodImage = async (imageBase64, mediaType = "image/jpeg") => {
   try {
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",
@@ -19,52 +25,80 @@ export const analyzeFoodImage = async (imageBase64, mediaType) => {
             },
             {
               type: "text",
-              text: `Analizza questa immagine di cibo e fornisci le seguenti informazioni in formato JSON:
+              text: `Sei un esperto nutrizionista. Analizza questa immagine di cibo in modo DETTAGLIATO.
+
+IMPORTANTE: Devi identificare OGNI SINGOLO INGREDIENTE visibile nel piatto, stimare la sua quantità in grammi, e calcolare calorie e macronutrienti per ciascuno.
+
+Fornisci le informazioni in questo formato JSON:
 
 {
-  "dishName": "nome del piatto in italiano",
-  "ingredients": ["lista", "degli", "ingredienti", "visibili"],
-  "calories": numero_calorie_stimate,
-  "macronutrients": {
-    "proteins": grammi_proteine,
-    "carbohydrates": grammi_carboidrati,
-    "fats": grammi_grassi
+  "dishName": "nome del piatto completo in italiano",
+  "totalWeight": numero_peso_totale_stimato_in_grammi,
+  "ingredients": [
+    {
+      "name": "nome ingrediente specifico",
+      "quantity": numero_grammi_stimati,
+      "calories": calorie_per_questa_quantità,
+      "macros": {
+        "proteins": grammi_proteine,
+        "carbohydrates": grammi_carboidrati,
+        "fats": grammi_grassi
+      }
+    }
+  ],
+  "totalCalories": somma_totale_calorie,
+  "totalMacros": {
+    "proteins": somma_totale_proteine,
+    "carbohydrates": somma_totale_carboidrati,
+    "fats": somma_totale_grassi
   },
-  "portionSize": "descrizione della porzione (es. 'porzione media 300g')",
-  "confidence": "high/medium/low basato sulla chiarezza dell'immagine",
-  "notes": "eventuali note aggiuntive sulla preparazione o ingredienti particolari"
+  "confidence": "high/medium/low",
+  "preparationNotes": "metodo di cottura e condimenti usati"
 }
 
-Rispondi SOLO con il JSON, senza altro testo. Se non riesci a identificare il cibo, imposta dishName come "Non identificato" e calories a 0.`,
+LINEE GUIDA:
+- Identifica TUTTI gli ingredienti visibili separatamente (es. se vedi pasta, pomodoro, basilico, olio → 4 ingredienti separati)
+- Stima con precisione il peso di ogni ingrediente (usa porzioni standard come riferimento)
+- Calcola calorie e macro per la quantità SPECIFICA di ogni ingrediente
+- Se vedi condimenti (olio, burro, formaggio), includili come ingredienti separati
+- Sii il più preciso possibile nelle stime delle quantità
+- Se ci sono più componenti nel piatto (es. proteina + contorno), analizzali separatamente
+
+ESEMPI DI PRECISIONE:
+- "100g di pasta" NON "pasta"
+- "150g di petto di pollo alla griglia" NON "pollo"
+- "10ml di olio extravergine" NON "condimento"
+- "30g di parmigiano grattugiato" NON "formaggio"
+
+Rispondi SOLO con il JSON valido, senza markdown o altro testo.`,
             },
           ],
         },
       ],
     });
 
-    //estrai la risposta dal messaggio
-    const responseMessage = message.content[0].text;
+    // Estrai il testo della risposta
+    const responseText = message.content[0].text;
 
-    //pulisci la risposta per ottenere solo il JSON
-    let cleanResponse = responseMessage.trim();
-    if (cleanResponse.startsWith("```json")) {
-      cleanResponse = cleanResponse
+    // Pulisci il JSON se Claude ha aggiunto markdown
+    let cleanedResponse = responseText.trim();
+    if (cleanedResponse.startsWith("```json")) {
+      cleanedResponse = cleanedResponse
         .replace(/```json\n?/g, "")
         .replace(/```\n?/g, "")
         .trim();
-    } else if (cleanResponse.startsWith("```")) {
-      cleanResponse = cleanResponse.replace(/```\n?/g, "").trim();
+    } else if (cleanedResponse.startsWith("```")) {
+      cleanedResponse = cleanedResponse.replace(/```\n?/g, "").trim();
     }
 
-    //Parsing del Json
-    let analysisResult = JSON.parse(cleanResponse);
+    // Parsing del JSON
+    const analysisResult = JSON.parse(cleanedResponse);
 
     return {
       success: true,
       data: analysisResult,
     };
   } catch (error) {
-
     console.error("Errore nell'analisi con Claude:", error);
 
     if (error instanceof SyntaxError) {
@@ -82,3 +116,5 @@ Rispondi SOLO con il JSON, senza altro testo. Se non riesci a identificare il ci
     };
   }
 };
+
+export default analyzeFoodImage

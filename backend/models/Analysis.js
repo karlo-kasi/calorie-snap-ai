@@ -1,18 +1,47 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 
 const analysisSchema = new mongoose.Schema({
   dishName: {
     type: String,
     required: true,
   },
+  totalWeight: {
+    type: Number,
+    default: 0,
+  },
   ingredients: [{
-    type: String,
+    name: {
+      type: String,
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    calories: {
+      type: Number,
+      required: true,
+    },
+    macros: {
+      proteins: {
+        type: Number,
+        default: 0,
+      },
+      carbohydrates: {
+        type: Number,
+        default: 0,
+      },
+      fats: {
+        type: Number,
+        default: 0,
+      },
+    },
   }],
-  calories: {
+  totalCalories: {
     type: Number,
     required: true,
   },
-  macronutrients: {
+  totalMacros: {
     proteins: {
       type: Number,
       default: 0,
@@ -26,21 +55,17 @@ const analysisSchema = new mongoose.Schema({
       default: 0,
     },
   },
-  portionSize: {
-    type: String,
-    default: 'standard',
-  },
   confidence: {
     type: String,
     enum: ['high', 'medium', 'low'],
     default: 'medium',
   },
+  preparationNotes: {
+    type: String,
+  },
   imageBase64: {
     type: String,
     required: false,
-  },
-  notes: {
-    type: String,
   },
   createdAt: {
     type: Date,
