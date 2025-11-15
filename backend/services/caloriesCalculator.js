@@ -34,3 +34,5 @@ const caloriesCalculator = (eta, altezza, peso, sesso, attività, goal) => {
     deficit: DAILY_GOAL_ADJUSTMENTS[goal],
   };
 };
+
+export { caloriesCalculator }

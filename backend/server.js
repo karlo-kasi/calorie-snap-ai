@@ -5,6 +5,7 @@ import connectDB from "./config/database.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import allRoutes from "./routes/routes.js";
 import authRoutes from "./routes/authRoutes.js"
+import profileRoutes from "./routes/profileRoutes.js"
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth", authRoutes)
+app.use("/api/profile", profileRoutes)
 app.use("/api", allRoutes);
 
 // 404 Handler

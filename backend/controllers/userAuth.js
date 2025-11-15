@@ -32,7 +32,7 @@ const newUser = async (req, res) => {
       email: newUser.email,
     });
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
       email: user.email,
     });
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ error: err.message });
   }
 };
 
