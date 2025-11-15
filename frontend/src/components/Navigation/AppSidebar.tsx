@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Plus, BookOpen, BarChart3, User, Utensils, Settings } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Home, Plus, BookOpen, BarChart3, User, Utensils, Settings, LogOut } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,8 @@ import {
   SidebarMenuButton,
   SidebarSeparator,
 } from '../../components/ui/sidebar';
+import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../hooks/use-toast';
 
 const navItems = [
   { to: '/', icon: Home, label: 'Home' },
@@ -23,7 +25,19 @@ const navItems = [
 
 export function AppSidebar() {
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Disconnesso",
+      description: "Sei stato disconnesso con successo",
+    });
+    navigate('/login');
+  };
+
   return (
     <Sidebar collapsible="icon" className="transition-all duration-300 ease-in-out">
       <SidebarHeader className="p-4 transition-all duration-300">
@@ -85,6 +99,18 @@ export function AppSidebar() {
                   Impostazioni
                 </span>
               </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem className="group-data-[collapsible=icon]/sidebar-wrapper:flex group-data-[collapsible=icon]/sidebar-wrapper:justify-center">
+            <SidebarMenuButton
+              tooltip="Esci"
+              onClick={handleLogout}
+              className="group-data-[collapsible=icon]/sidebar-wrapper:h-12 group-data-[collapsible=icon]/sidebar-wrapper:w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:p-0"
+            >
+              <LogOut className="shrink-0 w-5 h-5 group-data-[collapsible=icon]/sidebar-wrapper:w-6 group-data-[collapsible=icon]/sidebar-wrapper:h-6" />
+              <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
+                Esci
+              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

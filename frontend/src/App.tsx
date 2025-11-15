@@ -9,7 +9,10 @@ import { AddFood } from "./pages/AddFood";
 import { Diary } from "./pages/Diary";
 import { Stats } from "./pages/Stats";
 import { Profile } from "./pages/Profile";
+import { Login } from "./pages/Login";
 import { MainLayout } from "./components/Layout/MainLayout";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthProvider } from "./contexts/AuthContext";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,17 +29,67 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <MainLayout>
+          <AuthProvider>
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/add" element={<AddFood />} />
-              <Route path="/diary" element={<Diary />} />
-              <Route path="/stats" element={<Stats />} />
-              <Route path="/profile" element={<Profile />} />
+              {/* Rotta pubblica di login */}
+              <Route path="/login" element={<Login />} />
+
+              {/* Rotte protette */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <Home />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/add"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <AddFood />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/diary"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <Diary />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/stats"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <Stats />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <Profile />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </MainLayout>
+          </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

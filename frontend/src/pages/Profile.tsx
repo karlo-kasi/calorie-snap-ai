@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
+import { useNavigate } from 'react-router-dom';
+import { Card } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
+import { Separator } from '../components/ui/separator';
 import { User, Settings, Target, Bell, HelpCircle, LogOut } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 export const Profile = () => {
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: 'Mario Rossi',
-    email: 'mario.rossi@email.com',
+    name: user?.name || 'Mario Rossi',
+    email: user?.email || 'mario.rossi@email.com',
     age: 32,
     height: 175,
     weight: 75,
@@ -28,6 +32,15 @@ export const Profile = () => {
       title: "Profilo aggiornato",
       description: "Le tue informazioni sono state salvate con successo.",
     });
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Disconnesso",
+      description: "Sei stato disconnesso con successo",
+    });
+    navigate('/login');
   };
 
   const menuItems = [
@@ -164,7 +177,11 @@ export const Profile = () => {
 
       {/* Logout */}
       <Card className="p-4">
-        <Button variant="ghost" className="w-full text-destructive justify-start">
+        <Button
+          variant="ghost"
+          className="w-full text-destructive justify-start"
+          onClick={handleLogout}
+        >
           <LogOut className="mr-3 h-4 w-4" />
           Disconnetti
         </Button>
