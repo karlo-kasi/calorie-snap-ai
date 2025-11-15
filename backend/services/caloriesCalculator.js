@@ -28,11 +28,11 @@ const caloriesCalculator = (eta, altezza, peso, sesso, attività, goal) => {
   const TARGET = TDEE + DAILY_GOAL_ADJUSTMENTS[goal];
 
   return {
-    BMR,
-    TDEE,
-    TARGET,
+    BMR: Math.round(BMR),
+    TDEE: Math.round(TDEE),
+    TARGET: Math.round(TARGET),
     deficit: DAILY_GOAL_ADJUSTMENTS[goal],
   };
 };
 
-export { caloriesCalculator }
+export { caloriesCalculator };

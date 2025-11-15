@@ -3,7 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import connectDB from "./config/database.js";
 import errorHandler from "./middlewares/errorHandler.js";
-import allRoutes from "./routes/routes.js";
+import mealsRoutes from "./routes/mealsRoutes.js";
 import authRoutes from "./routes/authRoutes.js"
 import profileRoutes from "./routes/profileRoutes.js"
 
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 app.use("/api/auth", authRoutes)
 app.use("/api/profile", profileRoutes)
-app.use("/api", allRoutes);
+app.use("/api/meals", mealsRoutes);
 
 // 404 Handler
 app.use((req, res) => {
