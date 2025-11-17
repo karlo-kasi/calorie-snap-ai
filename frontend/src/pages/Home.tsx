@@ -1,54 +1,84 @@
-import React from 'react';
-import { CalorieCard } from '../components/CalorieCard/CalorieCard';
-import { FoodCard } from '../components/FoodCard/FoodCard';
-import { Button } from '../components/ui/button';
-import { Card } from '../components/ui/card';
-import { Plus, Camera, Upload } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import heroImage from '../assets/hero-food.jpg';
+import React from "react";
+import { CalorieCard } from "../components/CalorieCard/CalorieCard";
+import { FoodCard } from "../components/FoodCard/FoodCard";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/card";
+import { Plus, Camera, Upload } from "lucide-react";
+import { Link } from "react-router-dom";
+import heroImage from "../assets/hero-food.jpg";
+import { OnboardingModal } from "../components/OnboardingModal";
+import { useAuth } from "../contexts/AuthContext";
 
 export const Home = () => {
+  const { user, token, isAuthenticated, isLoading } = useAuth();
+
+  console.log("🏠 Home - Debug Info:");
+  console.log("  - User:", user);
+  console.log("  - Token:", token);
+  console.log("  - isAuthenticated:", isAuthenticated);
+  console.log("  - isLoading:", isLoading);
+  console.log("  - localStorage token:", localStorage.getItem("auth_token"));
+  console.log("  - localStorage user:", localStorage.getItem("user"));
+
+  // Mostra il modal se l'utente non ha completato l'onboarding
+  const shouldShowOnboarding = user && !user.onboardingCompleted;
+
+  // Se sta ancora caricando, mostra un loading
+  if (isLoading) {
+    return <div>Caricamento...</div>;
+  }
+
+  // Se non è autenticato, reindirizza al login
+  if (!isAuthenticated) {
+    console.log("❌ Utente non autenticato, dovrebbe essere reindirizzato");
+    return <div>Non autenticato</div>;
+  }
+
   // Mock data - in real app this would come from state/API
   const calorieData = {
     consumed: 1420,
-    goal: 2000,
-    remaining: 580
+    goal: user?.profile?.dailyCalories || 2000,
+    remaining: (user?.profile?.dailyCalories || 2000) - 1420,
   };
 
   const recentFoods = [
     {
-      id: '1',
-      name: 'Insalata mista',
+      id: "1",
+      name: "Insalata mista",
       calories: 150,
-      quantity: '1 porzione',
-      time: '13:30'
+      quantity: "1 porzione",
+      time: "13:30",
     },
     {
-      id: '2', 
-      name: 'Pollo alla griglia',
+      id: "2",
+      name: "Pollo alla griglia",
       calories: 280,
-      quantity: '150g',
-      time: '12:45'
-    }
+      quantity: "150g",
+      time: "12:45",
+    },
   ];
 
   const quickActions = [
-    { icon: Camera, label: 'Scatta foto', to: '/add?mode=photo' },
-    { icon: Plus, label: 'Aggiungi manuale', to: '/add?mode=manual' },
-    { icon: Upload, label: 'Importa', to: '/add?mode=import' }
+    { icon: Camera, label: "Scatta foto", to: "/add?mode=photo" },
+    { icon: Plus, label: "Aggiungi manuale", to: "/add?mode=manual" },
+    { icon: Upload, label: "Importa", to: "/add?mode=import" },
   ];
+
+  console.log("🎯 shouldShowOnboarding:", shouldShowOnboarding);
 
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
       <Card className="p-6 gradient-primary text-primary-foreground overflow-hidden relative">
         <div className="relative z-10">
-          <h1 className="text-2xl font-bold mb-2">Ciao! 👋</h1>
+          <h1 className="text-2xl font-bold mb-2">
+            Ciao {user?.name || "Utente"}! 👋
+          </h1>
           <p className="opacity-90">Oggi stai facendo un ottimo lavoro!</p>
         </div>
-        <img 
-          src={heroImage} 
-          alt="Healthy foods" 
+        <img
+          src={heroImage}
+          alt="Healthy foods"
           className="absolute right-0 top-0 h-full w-1/2 object-cover opacity-20"
         />
       </Card>
@@ -62,8 +92,8 @@ export const Home = () => {
         <div className="grid grid-cols-3 gap-3">
           {quickActions.map((action) => (
             <Link key={action.label} to={action.to}>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="h-16 flex-col space-y-1 w-full hover:bg-primary/5 hover:border-primary/30"
               >
                 <action.icon size={20} />
@@ -79,10 +109,12 @@ export const Home = () => {
         <div className="flex items-center justify-between">
           <h2 className="font-semibold">Pasti Recenti</h2>
           <Link to="/diary">
-            <Button variant="ghost" size="sm">Vedi tutto</Button>
+            <Button variant="ghost" size="sm">
+              Vedi tutto
+            </Button>
           </Link>
         </div>
-        
+
         {recentFoods.map((food) => (
           <FoodCard key={food.id} {...food} />
         ))}
@@ -90,11 +122,17 @@ export const Home = () => {
 
       {/* Daily Tips */}
       <Card className="p-4 bg-gradient-to-r from-energy/10 to-warning/10 border-energy/20">
-        <h3 className="font-medium mb-2 text-energy-foreground">💡 Consiglio del giorno</h3>
+        <h3 className="font-medium mb-2 text-energy-foreground">
+          💡 Consiglio del giorno
+        </h3>
         <p className="text-sm text-muted-foreground">
-          Bere un bicchiere d'acqua prima dei pasti può aiutarti a sentirti più sazio e controllare le porzioni.
+          Bere un bicchiere d'acqua prima dei pasti può aiutarti a sentirti più
+          sazio e controllare le porzioni.
         </p>
       </Card>
+
+      {/* Onboarding Modal */}
+      {user && <OnboardingModal open={shouldShowOnboarding || false} />}
     </div>
   );
 };

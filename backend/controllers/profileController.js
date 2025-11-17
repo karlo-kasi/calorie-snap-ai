@@ -3,6 +3,9 @@ import User from "../models/User.js";
 
 export const setupInformation = async (req, res) => {
   try {
+    console.log("📥 Dati ricevuti dal frontend:", req.body);
+    console.log("👤 UserId dal middleware:", req.userId);
+
     const { nome, cognome, età, altezza, peso, sesso, attività, goal } =
       req.body;
 
@@ -16,11 +19,19 @@ export const setupInformation = async (req, res) => {
       !attività ||
       !goal
     ) {
-      return res.status(401).json({ message: "Dati mancanti!" });
+      console.log("❌ Dati mancanti!");
+      return res.status(400).json({ message: "Dati mancanti!" });
     }
-    const userId = req.userId || "69175baa6733311dccb884e2";
+
+    const userId = req.userId;
+
+    if (!userId) {
+      console.log("❌ UserId mancante!");
+      return res.status(401).json({ message: "Utente non autenticato" });
+    }
 
     // Calcola le calorie
+    console.log("🧮 Calcolo calorie con parametri:", { età, altezza, peso, sesso, attività, goal });
     const objectCalories = caloriesCalculator(
       età,
       altezza,
@@ -29,16 +40,26 @@ export const setupInformation = async (req, res) => {
       attività,
       goal
     );
+    console.log("✅ Calorie calcolate:", objectCalories);
+
+    // Mappa il gender correttamente
+    let gender = "male";
+    if (sesso.toLowerCase() === "donna") {
+      gender = "female";
+    } else if (sesso.toLowerCase() === "altro") {
+      gender = "other";
+    }
 
     // Update con campi nested
+    console.log("💾 Aggiornamento utente con ID:", userId);
     const user = await User.findByIdAndUpdate(
       userId,
       {
-        username: `${nome} ${cognome}`, // Opzionale
+        username: `${nome} ${cognome}`,
         "profile.name": nome,
         "profile.surname": cognome,
         "profile.age": età,
-        "profile.gender": sesso.toLowerCase() === "donna" ? "female" : "male",
+        "profile.gender": gender,
         "profile.weight": peso,
         "profile.height": altezza,
         "profile.activityLevel": attività,
@@ -48,6 +69,7 @@ export const setupInformation = async (req, res) => {
       },
       { new: true, runValidators: true }
     );
+    console.log("✅ Utente aggiornato:", user ? "Success" : "Not found");
 
     if (!user) {
       return res.status(404).json({ message: "Utente non trovato" });
@@ -64,6 +86,8 @@ export const setupInformation = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("❌ Errore in setupInformation:", err);
+    console.error("Stack trace:", err.stack);
     res.status(500).json({ error: err.message });
   }
 };

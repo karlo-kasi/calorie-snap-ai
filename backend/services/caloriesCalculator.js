@@ -3,7 +3,7 @@ const ACTIVITY_MULTIPLIERS = {
   light: 1.375,
   moderate: 1.55,
   active: 1.725,
-  very_active: 1.9,
+  very_active: 1.9
 };
 
 const DAILY_GOAL_ADJUSTMENTS = {

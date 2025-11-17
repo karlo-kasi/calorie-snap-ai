@@ -6,11 +6,12 @@ import {
     getMonthlyStats
 
 } from "../controllers/profileController.js";
+import authMiddleware from "../middlewares/auth.js";
 
 const router = express.Router()
 
 
-router.post("/onboarding", setupInformation)
+router.post("/onboarding", authMiddleware, setupInformation)
 
 router.get("/stats", getDashboard)
 

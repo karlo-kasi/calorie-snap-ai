@@ -23,6 +23,8 @@ export interface User {
 }
 
 export interface OnboardingData {
+  name: string;
+  surname: string;
   age: number;
   height: number;
   weight: number;
@@ -63,13 +65,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Carica il token e le info utente dal localStorage all'avvio
   useEffect(() => {
+    console.log("🔄 AuthContext useEffect - Caricamento dati...");
     try {
       const storedToken = localStorage.getItem("auth_token");
       const storedUser = localStorage.getItem("user");
 
+      console.log("📦 storedToken:", storedToken);
+      console.log("📦 storedUser:", storedUser);
+
       if (storedToken && storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        console.log("✅ Dati trovati - Token:", !!storedToken);
+        console.log("✅ Dati trovati - User:", parsedUser);
+
         setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+        setUser(parsedUser);
+      } else {
+        console.log("❌ Dati mancanti nel localStorage");
+        console.log("  - Token presente:", !!storedToken);
+        console.log("  - User presente:", !!storedUser);
       }
     } catch (error) {
       console.error(
@@ -86,7 +100,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      // TODO: Sostituire con chiamata API reale
+      console.log("🔐 Tentativo di login per:", email);
+
       const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
@@ -95,17 +110,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("📡 Risposta login:", response.status, response.ok);
+
       if (!response.ok) {
         throw new Error("Login fallito");
       }
 
       const data = await response.json();
+      console.log("📋 Dati ricevuti dal backend:", data);
+      console.log("  - Token:", data.token);
+      console.log("  - User:", data.user);
+
+      // Adatta la risposta del backend al formato aspettato dal frontend
+      let user: User;
+
+      if (data.user) {
+        // Il backend restituisce già l'oggetto user completo
+        user = data.user;
+      } else {
+        // Il backend restituisce userId e email separatamente - creiamo l'oggetto user
+        user = {
+          id: data.userId,
+          email: data.email,
+          name: data.name || data.email.split("@")[0], // Usa il nome o la parte prima di @ come fallback
+          onboardingCompleted: false, // Default per un nuovo login
+        };
+      }
+
+      console.log("👤 Oggetto user creato:", user);
 
       // Salva token e user
       setToken(data.token);
-      setUser(data.user);
+      setUser(user);
       localStorage.setItem("auth_token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify(user));
+
+      console.log("💾 Dati salvati nel localStorage:");
+      console.log("  - Token salvato:", localStorage.getItem("auth_token"));
+      console.log("  - User salvato:", localStorage.getItem("user"));
     } catch (error) {
       console.error("Errore durante il login:", error);
       throw error;
@@ -153,16 +195,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error("Utente non autenticato");
       }
 
+      // Adatta i dati per il backend
+      const backendData = {
+        nome: data.name,
+        cognome: data.surname,
+        età: data.age,
+        altezza: data.height,
+        peso: data.weight,
+        sesso: data.gender === "female" ? "donna" : data.gender === "male" ? "uomo" : "altro",
+        attività: data.activityLevel,
+        goal: data.goal,
+      };
+
+      console.log("📋 Dati adattati per il backend:", backendData);
+
       // Chiamata API per completare l'onboarding
       const response = await fetch(
-        "http://localhost:3000/api/auth/onboarding",
+        "http://localhost:3000/api/profile/onboarding", // Assicurati che questo URL sia corretto
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(backendData),
         }
       );
 
@@ -171,8 +227,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const result = await response.json();
+      console.log("✅ Risposta API:", result);
 
-      // Aggiorna l'utente con i nuovi dati
+      // Aggiorna l'utente con i nuovi dati dal backend
       const updatedUser: User = {
         ...user!,
         onboardingCompleted: true,
@@ -183,9 +240,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           gender: data.gender,
           activityLevel: data.activityLevel,
           goal: data.goal,
-          dailyCalories: result.dailyCalories || 2000,
+          dailyCalories:
+            result.calories?.TARGET ||
+            result.user?.goals?.targetCalories ||
+            2000,
         },
       };
+      console.log("User prima dell'aggiornamento:", user);
+      console.log("User dopo l'aggiornamento:", updatedUser);
 
       setUser(updatedUser);
       localStorage.setItem("user", JSON.stringify(updatedUser));
