@@ -1,76 +1,195 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { FoodCard } from '../components/FoodCard/FoodCard';
-import { BookOpen, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
-import { format, addDays, subDays } from 'date-fns';
+import { MealDetailModal } from '../components/MealDetailModal/MealDetailModal';
+import { BookOpen, ChevronLeft, ChevronRight, Loader2, RefreshCw } from 'lucide-react';
+import { format, addDays, subDays, isToday } from 'date-fns';
 import { it } from 'date-fns/locale';
+import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../hooks/use-toast';
+import * as mealService from '../services/api/meal.service';
+import type { Meal, MealType } from '../types/meal.types';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../components/ui/alert-dialog";
 
 export const Diary = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
+  const [mealToDelete, setMealToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Mock data - in real app this would come from state/API
-  const dailyFoods = {
-    breakfast: [
-      { id: '1', name: 'Caffè con latte', calories: 80, quantity: '1 tazza', time: '07:30' },
-      { id: '2', name: 'Cornetto', calories: 320, quantity: '1 pezzo', time: '07:35' }
-    ],
-    lunch: [
-      { id: '3', name: 'Insalata mista', calories: 150, quantity: '1 porzione', time: '13:00' },
-      { id: '4', name: 'Pollo alla griglia', calories: 280, quantity: '150g', time: '13:15' }
-    ],
-    dinner: [
-      { id: '5', name: 'Pasta al pomodoro', calories: 420, quantity: '80g', time: '19:30' },
-      { id: '6', name: 'Insalata verde', calories: 50, quantity: '1 porzione', time: '19:45' }
-    ],
-    snacks: [
-      { id: '7', name: 'Mela', calories: 95, quantity: '1 media', time: '16:00' }
-    ]
-  };
+  const { meals, dailyStats, user, token, isMealsLoading, refreshMeals } = useAuth();
+  const { toast } = useToast();
 
-  const totalCalories = Object.values(dailyFoods)
-    .flat()
-    .reduce((sum, food) => sum + food.calories, 0);
+  // Filtra e raggruppa i pasti per tipo
+  const groupedMeals = useMemo(() => {
+    const groups: Record<MealType, Meal[]> = {
+      breakfast: [],
+      lunch: [],
+      dinner: [],
+      snack: [],
+    };
+
+    meals.forEach((meal) => {
+      if (groups[meal.mealType]) {
+        groups[meal.mealType].push(meal);
+      }
+    });
+
+    return groups;
+  }, [meals]);
+
+  // Calcola calorie totali (usa dailyStats se disponibile, altrimenti calcola)
+  const totalCalories = dailyStats?.consumed.calories ||
+    meals.reduce((sum, meal) => sum + meal.totalCalories, 0);
+
+  const targetCalories = user?.profile?.dailyCalories || dailyStats?.target || 2000;
+  const remainingCalories = targetCalories - totalCalories;
 
   const mealSections = [
-    { key: 'breakfast', title: 'Colazione', icon: '🌅', foods: dailyFoods.breakfast },
-    { key: 'lunch', title: 'Pranzo', icon: '🍽️', foods: dailyFoods.lunch },
-    { key: 'dinner', title: 'Cena', icon: '🌙', foods: dailyFoods.dinner },
-    { key: 'snacks', title: 'Spuntini', icon: '🍎', foods: dailyFoods.snacks }
+    {
+      key: 'breakfast' as MealType,
+      title: 'Colazione',
+      icon: '🌅',
+      meals: groupedMeals.breakfast
+    },
+    {
+      key: 'lunch' as MealType,
+      title: 'Pranzo',
+      icon: '🍽️',
+      meals: groupedMeals.lunch
+    },
+    {
+      key: 'dinner' as MealType,
+      title: 'Cena',
+      icon: '🌙',
+      meals: groupedMeals.dinner
+    },
+    {
+      key: 'snack' as MealType,
+      title: 'Spuntini',
+      icon: '🍎',
+      meals: groupedMeals.snack
+    }
   ];
+
+  // Calcola calorie per sezione
+  const getSectionCalories = (meals: Meal[]) => {
+    return meals.reduce((sum, meal) => sum + meal.totalCalories, 0);
+  };
+
+  // Handler per visualizzare dettaglio pasto
+  const handleViewMeal = (mealId: string) => {
+    const meal = meals.find(m => m._id === mealId);
+    if (meal) {
+      setSelectedMeal(meal);
+    }
+  };
+
+  // Handler per eliminare pasto
+  const handleDeleteMeal = async () => {
+    if (!mealToDelete || !token) return;
+
+    setIsDeleting(true);
+
+    try {
+      await mealService.deleteMeal(token, mealToDelete);
+
+      toast({
+        title: "Pasto eliminato",
+        description: "Il pasto è stato rimosso con successo",
+      });
+
+      // Ricarica i pasti
+      await refreshMeals();
+    } catch (error) {
+      console.error("Errore eliminazione pasto:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile eliminare il pasto. Riprova.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+      setMealToDelete(null);
+    }
+  };
+
+  // Handler per refresh manuale
+  const handleRefresh = async () => {
+    try {
+      await refreshMeals();
+      toast({
+        title: "Aggiornato",
+        description: "Pasti aggiornati con successo",
+      });
+    } catch (error) {
+      toast({
+        title: "Errore",
+        description: "Impossibile aggiornare i pasti",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center space-x-2">
-        <BookOpen className="h-6 w-6 text-primary" />
-        <h1 className="text-2xl font-bold">Diario Alimentare</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <BookOpen className="h-6 w-6 text-primary" />
+          <h1 className="text-2xl font-bold">Diario Alimentare</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          {isMealsLoading && (
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isMealsLoading}
+          >
+            <RefreshCw className={`h-4 w-4 ${isMealsLoading ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
       </div>
 
       {/* Date Navigator */}
       <Card className="p-4">
         <div className="flex items-center justify-between">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setSelectedDate(subDays(selectedDate, 1))}
+            disabled={!isToday(selectedDate)} // Disabilita se non è oggi
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          
+
           <div className="text-center">
             <div className="font-semibold">
               {format(selectedDate, 'EEEE d MMMM', { locale: it })}
             </div>
             <div className="text-sm text-muted-foreground">
-              {totalCalories} kcal totali
+              {Math.round(totalCalories)} kcal totali
             </div>
           </div>
-          
-          <Button 
-            variant="ghost" 
+
+          <Button
+            variant="ghost"
             size="sm"
             onClick={() => setSelectedDate(addDays(selectedDate, 1))}
+            disabled // Per ora mostriamo solo oggi
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -81,50 +200,132 @@ export const Diary = () => {
       <Card className="p-4 gradient-primary text-primary-foreground">
         <div className="flex justify-between items-center">
           <div>
-            <div className="text-lg font-semibold">{totalCalories} kcal</div>
+            <div className="text-lg font-semibold">
+              {Math.round(totalCalories)} kcal
+            </div>
             <div className="text-sm opacity-90">Consumate oggi</div>
           </div>
           <div className="text-right">
-            <div className="text-lg font-semibold">580 kcal</div>
-            <div className="text-sm opacity-90">Rimaste</div>
+            <div className={`text-lg font-semibold ${remainingCalories < 0 ? 'text-warning' : ''}`}>
+              {Math.round(Math.abs(remainingCalories))} kcal
+            </div>
+            <div className="text-sm opacity-90">
+              {remainingCalories >= 0 ? 'Rimaste' : 'In eccesso'}
+            </div>
           </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mt-3 h-2 bg-white/20 rounded-full overflow-hidden">
+          <div
+            className={`h-full transition-all ${remainingCalories < 0 ? 'bg-warning' : 'bg-white'}`}
+            style={{
+              width: `${Math.min((totalCalories / targetCalories) * 100, 100)}%`
+            }}
+          />
         </div>
       </Card>
 
       {/* Meal Sections */}
-      {mealSections.map((section) => (
-        <div key={section.key} className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="font-semibold flex items-center gap-2">
-              <span>{section.icon}</span>
-              {section.title}
-              <span className="text-sm text-muted-foreground">
-                ({section.foods.reduce((sum, food) => sum + food.calories, 0)} kcal)
-              </span>
-            </h2>
-            <Button variant="ghost" size="sm">
-              + Aggiungi
-            </Button>
+      {mealSections.map((section) => {
+        const sectionCalories = getSectionCalories(section.meals);
+
+        return (
+          <div key={section.key} className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="font-semibold flex items-center gap-2">
+                <span>{section.icon}</span>
+                {section.title}
+                {sectionCalories > 0 && (
+                  <span className="text-sm text-muted-foreground">
+                    ({Math.round(sectionCalories)} kcal)
+                  </span>
+                )}
+              </h2>
+              <Button variant="ghost" size="sm">
+                + Aggiungi
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              {section.meals.length > 0 ? (
+                section.meals.map((meal) => (
+                  <div key={meal._id} onClick={() => handleViewMeal(meal._id)} className="cursor-pointer">
+                    <FoodCard
+                      id={meal._id}
+                      name={meal.dishName}
+                      calories={meal.totalCalories}
+                      quantity={`${meal.totalWeight}g`}
+                      time={format(new Date(meal.date), 'HH:mm')}
+                      onEdit={(id) => handleViewMeal(id)}
+                      onDelete={(id) => setMealToDelete(id)}
+                    />
+                  </div>
+                ))
+              ) : (
+                <Card className="p-4 text-center">
+                  <p className="text-sm text-muted-foreground">
+                    Nessun cibo aggiunto per {section.title.toLowerCase()}
+                  </p>
+                  <Button variant="ghost" size="sm" className="mt-2">
+                    + Aggiungi cibo
+                  </Button>
+                </Card>
+              )}
+            </div>
           </div>
-          
-          <div className="space-y-2">
-            {section.foods.length > 0 ? (
-              section.foods.map((food) => (
-                <FoodCard key={food.id} {...food} />
-              ))
-            ) : (
-              <Card className="p-4 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Nessun cibo aggiunto per {section.title.toLowerCase()}
-                </p>
-                <Button variant="ghost" size="sm" className="mt-2">
-                  + Aggiungi cibo
-                </Button>
-              </Card>
-            )}
-          </div>
-        </div>
-      ))}
+        );
+      })}
+
+      {/* Empty State */}
+      {meals.length === 0 && !isMealsLoading && (
+        <Card className="p-8 text-center">
+          <div className="text-6xl mb-4">🍽️</div>
+          <h3 className="font-semibold text-lg mb-2">
+            Nessun pasto registrato oggi
+          </h3>
+          <p className="text-muted-foreground mb-4">
+            Inizia a tracciare i tuoi pasti per monitorare le calorie
+          </p>
+          <Button>+ Aggiungi primo pasto</Button>
+        </Card>
+      )}
+
+      {/* Modal Dettaglio Pasto */}
+      <MealDetailModal
+        meal={selectedMeal}
+        open={!!selectedMeal}
+        onClose={() => setSelectedMeal(null)}
+      />
+
+      {/* Dialog Conferma Eliminazione */}
+      <AlertDialog open={!!mealToDelete} onOpenChange={() => setMealToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminare questo pasto?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Questa azione non può essere annullata. Il pasto verrà eliminato definitivamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Annulla</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteMeal}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Eliminazione...
+                </>
+              ) : (
+                'Elimina'
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

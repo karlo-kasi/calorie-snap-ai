@@ -5,47 +5,18 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import {
+  User,
+  OnboardingData,
+  AuthContextType,
+} from "../types/user.types";
+import { Meal, DailyStats } from "../types/meal.types";
+import * as authService from "../services/api/auth.service";
+import * as mealService from "../services/api/meal.service";
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  onboardingCompleted?: boolean;
-  profile?: {
-    name: string,
-    surname: string,
-    age?: number;
-    height?: number;
-    weight?: number;
-    gender?: "male" | "female" | "other";
-    activityLevel?: string;
-    goal?: string;
-    dailyCalories?: number;
-  };
-}
-
-export interface OnboardingData {
-  name: string;
-  surname: string;
-  age: number;
-  height: number;
-  weight: number;
-  gender: "male" | "female" | "other";
-  activityLevel: string;
-  goal: string;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
-  completeOnboarding: (data: OnboardingData) => Promise<void>;
-  refreshUser: () => Promise<void>;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
+// Export dei tipi per retrocompatibilità
+export type { User, OnboardingData } from "../types/user.types";
+export type { Meal, DailyStats } from "../types/meal.types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -64,9 +35,34 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [dailyStats, setDailyStats] = useState<DailyStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMealsLoading, setIsMealsLoading] = useState(false);
 
-  // Funzione per ricaricare i dati utente dal server
+  /**
+   * Salva user e token nello stato e localStorage
+   */
+  const saveAuthData = (userData: User, authToken: string) => {
+    setUser(userData);
+    setToken(authToken);
+    localStorage.setItem("auth_token", authToken);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+
+  /**
+   * Pulisce i dati di autenticazione
+   */
+  const clearAuthData = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("user");
+  };
+
+  /**
+   * Ricarica i dati utente dal server
+   */
   const refreshUser = async () => {
     try {
       const storedToken = localStorage.getItem("auth_token");
@@ -76,107 +72,114 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
 
-      console.log("🔄 refreshUser: Ricaricamento dati utente dal server...");
-
-      const response = await fetch("http://localhost:3000/api/profile/me", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storedToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        console.error("❌ refreshUser: Errore nella risposta del server");
-        // Se il token non è valido, pulisci tutto
-        if (response.status === 401) {
-          localStorage.removeItem("auth_token");
-          localStorage.removeItem("user");
-          setToken(null);
-          setUser(null);
-        }
-        throw new Error("Errore nel caricamento dei dati utente");
-      }
-
-      const data = await response.json();
-      console.log("✅ refreshUser: Dati ricevuti dal server:", data);
+      const data = await authService.getCurrentUser(storedToken);
 
       if (data.success && data.user) {
         setUser(data.user);
         localStorage.setItem("user", JSON.stringify(data.user));
-        console.log("💾 refreshUser: Dati aggiornati in localStorage");
+        console.log("💾 refreshUser: Dati aggiornati");
       }
     } catch (error) {
-      console.error("❌ refreshUser: Errore durante il caricamento:", error);
+      console.error("❌ refreshUser: Errore:", error);
+
+      // Se il token non è valido, pulisci tutto
+      if (error instanceof Error && error.message === "UNAUTHORIZED") {
+        clearAuthData();
+      }
     }
   };
 
-  // Carica il token e le info utente dal localStorage all'avvio
+  /**
+   * Ricarica i pasti di oggi dal server
+   */
+  const refreshMeals = async () => {
+    try {
+      const storedToken = localStorage.getItem("auth_token");
+
+      if (!storedToken) {
+        console.log("⚠️ refreshMeals: Nessun token disponibile");
+        return;
+      }
+
+      setIsMealsLoading(true);
+
+      const data = await mealService.getTodayMeals(storedToken);
+
+      if (data.success) {
+        setMeals(data.data);
+        setDailyStats(data.dailyStats || null);
+        console.log("💾 refreshMeals: Pasti aggiornati");
+      }
+    } catch (error) {
+      console.error("❌ refreshMeals: Errore:", error);
+
+      // Se il token non è valido, pulisci tutto
+      if (error instanceof Error && error.message === "UNAUTHORIZED") {
+        clearAuthData();
+      }
+    } finally {
+      setIsMealsLoading(false);
+    }
+  };
+
+  /**
+   * Carica i dati all'avvio dell'app
+   */
   useEffect(() => {
     const loadInitialData = async () => {
-      console.log("🔄 AuthContext useEffect - Caricamento dati...");
+      console.log("🔄 AuthContext: Caricamento dati iniziali...");
+
       try {
         const storedToken = localStorage.getItem("auth_token");
         const storedUser = localStorage.getItem("user");
 
-        console.log("📦 storedToken:", storedToken);
-        console.log("📦 storedUser:", storedUser);
+        if (!storedToken) {
+          console.log("❌ Nessun token nel localStorage");
+          setIsLoading(false);
+          return;
+        }
 
-        if (storedToken) {
-          setToken(storedToken);
+        setToken(storedToken);
 
-          // Se abbiamo il token, prova a ricaricare i dati dal server
-          // Questo assicura che i dati siano sempre aggiornati
-          try {
-            const response = await fetch("http://localhost:3000/api/profile/me", {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${storedToken}`,
-              },
-            });
+        // Prova a ricaricare i dati dal server per sincronizzare
+        try {
+          const data = await authService.getCurrentUser(storedToken);
 
-            if (response.ok) {
-              const data = await response.json();
-              console.log("✅ Dati aggiornati dal server:", data);
+          if (data.success && data.user) {
+            setUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            console.log("✅ Dati sincronizzati dal server");
 
-              if (data.success && data.user) {
-                setUser(data.user);
-                localStorage.setItem("user", JSON.stringify(data.user));
-                console.log("💾 Dati salvati dal server");
+            // Carica anche i pasti di oggi
+            try {
+              const mealsData = await mealService.getTodayMeals(storedToken);
+              if (mealsData.success) {
+                setMeals(mealsData.data);
+                setDailyStats(mealsData.dailyStats || null);
+                console.log("✅ Pasti di oggi caricati");
               }
-            } else if (response.status === 401) {
-              // Token scaduto o non valido
-              console.log("⚠️ Token non valido, uso dati localStorage");
-              localStorage.removeItem("auth_token");
-              localStorage.removeItem("user");
-              setToken(null);
-              setUser(null);
-            } else if (storedUser) {
-              // Server non disponibile, usa i dati del localStorage come fallback
-              console.log("⚠️ Server non disponibile, uso dati localStorage");
-              const parsedUser = JSON.parse(storedUser);
-              setUser(parsedUser);
-            }
-          } catch (fetchError) {
-            // Errore di rete, usa i dati del localStorage come fallback
-            console.log("⚠️ Errore di rete, uso dati localStorage:", fetchError);
-            if (storedUser) {
-              const parsedUser = JSON.parse(storedUser);
-              setUser(parsedUser);
+            } catch (mealsError) {
+              console.log("⚠️ Errore caricamento pasti:", mealsError);
+              // Non blocchiamo l'app se i pasti non si caricano
             }
           }
-        } else {
-          console.log("❌ Nessun token nel localStorage");
+        } catch (fetchError) {
+          console.log("⚠️ Errore sync server, uso localStorage:", fetchError);
+
+          // Se il token è scaduto, pulisci
+          if (
+            fetchError instanceof Error &&
+            fetchError.message === "UNAUTHORIZED"
+          ) {
+            clearAuthData();
+          } else if (storedUser) {
+            // Fallback a localStorage se server non disponibile
+            setUser(JSON.parse(storedUser));
+          }
         }
       } catch (error) {
-        console.error(
-          "Errore nel caricamento dei dati di autenticazione:",
-          error
-        );
-        // Pulisci il localStorage se i dati sono corrotti
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("user");
+        console.error("❌ Errore caricamento dati:", error);
+        clearAuthData();
       } finally {
         setIsLoading(false);
       }
@@ -185,150 +188,61 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadInitialData();
   }, []);
 
+  /**
+   * Login
+   */
   const login = async (email: string, password: string) => {
     try {
-      console.log("🔐 Tentativo di login per:", email);
-
-      const response = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      console.log("📡 Risposta login:", response.status, response.ok);
-
-      if (!response.ok) {
-        throw new Error("Login fallito");
-      }
-
-      const data = await response.json();
-      console.log("📋 Dati ricevuti dal backend:", data);
-      console.log("  - Token:", data.token);
-      console.log("  - User:", data.user);
-
-      // Adatta la risposta del backend al formato aspettato dal frontend
-      let user: User;
-
-      if (data.user) {
-        // Il backend restituisce già l'oggetto user completo
-        user = data.user;
-      } else {
-        // Il backend restituisce userId e email separatamente - creiamo l'oggetto user
-        user = {
-          id: data.userId,
-          email: data.email,
-          name: data.name || data.email.split("@")[0], // Usa il nome o la parte prima di @ come fallback
-          onboardingCompleted: false, // Default per un nuovo login
-        };
-      }
-
-      console.log("👤 Oggetto user creato:", user);
-
-      // Salva token e user
-      setToken(data.token);
-      setUser(user);
-      localStorage.setItem("auth_token", data.token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      console.log("💾 Dati salvati nel localStorage:");
-      console.log("  - Token salvato:", localStorage.getItem("auth_token"));
-      console.log("  - User salvato:", localStorage.getItem("user"));
+      const data = await authService.loginUser(email, password);
+      saveAuthData(data.user, data.token);
     } catch (error) {
-      console.error("Errore durante il login:", error);
+      console.error("❌ Errore durante il login:", error);
       throw error;
     }
   };
 
+  /**
+   * Registrazione
+   */
   const register = async (name: string, email: string, password: string) => {
     try {
-      // TODO: Sostituire con chiamata API reale
-      const response = await fetch("http://localhost:3000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Registrazione fallita");
-      }
-
-      const data = await response.json();
-
-      // Salva token e user
-      setToken(data.token);
-      setUser(data.user);
-      localStorage.setItem("auth_token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      const data = await authService.registerUser(name, email, password);
+      saveAuthData(data.user, data.token);
     } catch (error) {
-      console.error("Errore durante la registrazione:", error);
+      console.error("❌ Errore durante la registrazione:", error);
       throw error;
     }
   };
 
+  /**
+   * Logout
+   */
   const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("user");
+    clearAuthData();
   };
 
+  /**
+   * Completa onboarding
+   */
   const completeOnboarding = async (data: OnboardingData) => {
     try {
       if (!token) {
         throw new Error("Utente non autenticato");
       }
 
-      // Adatta i dati per il backend
-      const backendData = {
-        nome: data.name,
-        cognome: data.surname,
-        età: data.age,
-        altezza: data.height,
-        peso: data.weight,
-        sesso: data.gender === "female" ? "donna" : data.gender === "male" ? "uomo" : "altro",
-        attività: data.activityLevel,
-        goal: data.goal,
-      };
+      const result = await authService.completeOnboarding(token, data);
 
-      console.log("📋 Dati adattati per il backend:", backendData);
-
-      // Chiamata API per completare l'onboarding
-      const response = await fetch(
-        "http://localhost:3000/api/profile/onboarding",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(backendData),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Errore durante il completamento dell'onboarding");
-      }
-
-      const result = await response.json();
-      console.log("✅ Risposta API onboarding:", result);
-
-      // Invece di costruire manualmente l'utente, ricarica i dati dal server
-      // Questo garantisce che i dati siano sempre consistenti con il backend
+      // Aggiorna i dati utente con la risposta
       if (result.success && result.user) {
-        console.log("📦 Aggiornamento user da risposta onboarding:", result.user);
         setUser(result.user);
         localStorage.setItem("user", JSON.stringify(result.user));
+        console.log("✅ Onboarding completato");
       } else {
-        // Fallback: ricarica i dati dal server usando refreshUser
-        console.log("🔄 Ricaricamento dati utente dal server...");
+        // Fallback: ricarica dal server
         await refreshUser();
       }
     } catch (error) {
-      console.error("Errore durante il completamento dell'onboarding:", error);
+      console.error("❌ Errore durante l'onboarding:", error);
       throw error;
     }
   };
@@ -336,13 +250,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value: AuthContextType = {
     user,
     token,
+    meals,
+    dailyStats,
     login,
     register,
     logout,
     completeOnboarding,
     refreshUser,
+    refreshMeals,
     isAuthenticated: !!token,
     isLoading,
+    isMealsLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
