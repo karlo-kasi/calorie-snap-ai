@@ -72,7 +72,7 @@ export const Home = () => {
       <Card className="p-6 gradient-primary text-primary-foreground overflow-hidden relative">
         <div className="relative z-10">
           <h1 className="text-2xl font-bold mb-2">
-            Ciao {user?.name || "Utente"}! 👋
+            Ciao {user?.profile?.name.trim()}! 👋
           </h1>
           <p className="opacity-90">Oggi stai facendo un ottimo lavoro!</p>
         </div>

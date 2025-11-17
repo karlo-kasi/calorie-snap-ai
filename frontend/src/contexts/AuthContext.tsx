@@ -12,6 +12,8 @@ export interface User {
   name: string;
   onboardingCompleted?: boolean;
   profile?: {
+    name: string,
+    surname: string,
     age?: number;
     height?: number;
     weight?: number;
@@ -234,6 +236,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         ...user!,
         onboardingCompleted: true,
         profile: {
+          name: data.name,
+          surname: data.surname,
           age: data.age,
           height: data.height,
           weight: data.weight,
