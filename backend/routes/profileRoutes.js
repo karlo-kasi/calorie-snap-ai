@@ -1,22 +1,28 @@
-import express from "express"
+import express from "express";
 import {
-    setupInformation,
-    getDashboard,
-    getWeeklyStats,
-    getMonthlyStats
-
+  getCurrentUser,
+  setupInformation,
+  getDashboard,
+  getWeeklyStats,
+  getMonthlyStats
 } from "../controllers/profileController.js";
 import authMiddleware from "../middlewares/auth.js";
 
-const router = express.Router()
+const router = express.Router();
 
+// GET /api/profile/me - Ottiene i dati dell'utente corrente
+router.get("/me", authMiddleware, getCurrentUser);
 
-router.post("/onboarding", authMiddleware, setupInformation)
+// POST /api/profile/onboarding - Completa l'onboarding
+router.post("/onboarding", authMiddleware, setupInformation);
 
-router.get("/stats", getDashboard)
+// GET /api/profile/stats - Dashboard stats
+router.get("/stats", authMiddleware, getDashboard);
 
-router.get("/stas-weekly", getWeeklyStats)
+// GET /api/profile/stats-weekly - Weekly stats
+router.get("/stats-weekly", authMiddleware, getWeeklyStats);
 
-router.get("/stats-monthly", getMonthlyStats)
+// GET /api/profile/stats-monthly - Monthly stats
+router.get("/stats-monthly", authMiddleware, getMonthlyStats);
 
-export default router 
+export default router; 

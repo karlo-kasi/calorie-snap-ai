@@ -1,5 +1,52 @@
 import { caloriesCalculator } from "../services/caloriesCalculator.js";
 import User from "../models/User.js";
+import { formatUserData, mapGender } from "../utils/userFormatter.js";
+
+/**
+ * GET /api/profile/me
+ * Ottiene i dati completi dell'utente corrente
+ */
+export const getCurrentUser = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Utente non autenticato"
+      });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Utente non trovato"
+      });
+    }
+
+    console.log("🔍 getCurrentUser - User trovato:", {
+      id: user._id,
+      email: user.email,
+      onboardingCompleted: user.goals?.onboardingCompleted,
+    });
+
+    // Usa la funzione helper per formattare i dati
+    const userData = formatUserData(user);
+
+    res.status(200).json({
+      success: true,
+      user: userData,
+    });
+  } catch (err) {
+    console.error("❌ Errore in getCurrentUser:", err);
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+};
 
 export const setupInformation = async (req, res) => {
   try {
@@ -9,6 +56,7 @@ export const setupInformation = async (req, res) => {
     const { nome, cognome, età, altezza, peso, sesso, attività, goal } =
       req.body;
 
+    // Validazione dati
     if (
       !nome ||
       !cognome ||
@@ -20,14 +68,20 @@ export const setupInformation = async (req, res) => {
       !goal
     ) {
       console.log("❌ Dati mancanti!");
-      return res.status(400).json({ message: "Dati mancanti!" });
+      return res.status(400).json({
+        success: false,
+        message: "Dati mancanti!"
+      });
     }
 
     const userId = req.userId;
 
     if (!userId) {
       console.log("❌ UserId mancante!");
-      return res.status(401).json({ message: "Utente non autenticato" });
+      return res.status(401).json({
+        success: false,
+        message: "Utente non autenticato"
+      });
     }
 
     // Calcola le calorie
@@ -42,15 +96,10 @@ export const setupInformation = async (req, res) => {
     );
     console.log("✅ Calorie calcolate:", objectCalories);
 
-    // Mappa il gender correttamente
-    let gender = "male";
-    if (sesso.toLowerCase() === "donna") {
-      gender = "female";
-    } else if (sesso.toLowerCase() === "altro") {
-      gender = "other";
-    }
+    // Mappa il gender usando la funzione helper
+    const gender = mapGender(sesso);
 
-    // Update con campi nested
+    // Aggiorna l'utente nel database
     console.log("💾 Aggiornamento utente con ID:", userId);
     const user = await User.findByIdAndUpdate(
       userId,
@@ -69,26 +118,32 @@ export const setupInformation = async (req, res) => {
       },
       { new: true, runValidators: true }
     );
+
     console.log("✅ Utente aggiornato:", user ? "Success" : "Not found");
 
     if (!user) {
-      return res.status(404).json({ message: "Utente non trovato" });
+      return res.status(404).json({
+        success: false,
+        message: "Utente non trovato"
+      });
     }
 
+    // Usa la funzione helper per formattare i dati utente
+    const userData = formatUserData(user);
+
     res.status(200).json({
+      success: true,
       message: "Profilo aggiornato con successo",
-      user: {
-        id: user._id,
-        email: user.email,
-        profile: user.profile,
-        goals: user.goals,
-        calories: objectCalories,
-      },
+      user: userData,
+      calories: objectCalories,
     });
   } catch (err) {
     console.error("❌ Errore in setupInformation:", err);
     console.error("Stack trace:", err.stack);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
   }
 };
 

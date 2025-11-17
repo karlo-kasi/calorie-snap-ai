@@ -42,6 +42,7 @@ interface AuthContextType {
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
   completeOnboarding: (data: OnboardingData) => Promise<void>;
+  refreshUser: () => Promise<void>;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -65,39 +66,123 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Carica il token e le info utente dal localStorage all'avvio
-  useEffect(() => {
-    console.log("🔄 AuthContext useEffect - Caricamento dati...");
+  // Funzione per ricaricare i dati utente dal server
+  const refreshUser = async () => {
     try {
       const storedToken = localStorage.getItem("auth_token");
-      const storedUser = localStorage.getItem("user");
 
-      console.log("📦 storedToken:", storedToken);
-      console.log("📦 storedUser:", storedUser);
+      if (!storedToken) {
+        console.log("⚠️ refreshUser: Nessun token disponibile");
+        return;
+      }
 
-      if (storedToken && storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        console.log("✅ Dati trovati - Token:", !!storedToken);
-        console.log("✅ Dati trovati - User:", parsedUser);
+      console.log("🔄 refreshUser: Ricaricamento dati utente dal server...");
 
-        setToken(storedToken);
-        setUser(parsedUser);
-      } else {
-        console.log("❌ Dati mancanti nel localStorage");
-        console.log("  - Token presente:", !!storedToken);
-        console.log("  - User presente:", !!storedUser);
+      const response = await fetch("http://localhost:3000/api/profile/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        console.error("❌ refreshUser: Errore nella risposta del server");
+        // Se il token non è valido, pulisci tutto
+        if (response.status === 401) {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("user");
+          setToken(null);
+          setUser(null);
+        }
+        throw new Error("Errore nel caricamento dei dati utente");
+      }
+
+      const data = await response.json();
+      console.log("✅ refreshUser: Dati ricevuti dal server:", data);
+
+      if (data.success && data.user) {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        console.log("💾 refreshUser: Dati aggiornati in localStorage");
       }
     } catch (error) {
-      console.error(
-        "Errore nel caricamento dei dati di autenticazione:",
-        error
-      );
-      // Pulisci il localStorage se i dati sono corrotti
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("user");
-    } finally {
-      setIsLoading(false);
+      console.error("❌ refreshUser: Errore durante il caricamento:", error);
     }
+  };
+
+  // Carica il token e le info utente dal localStorage all'avvio
+  useEffect(() => {
+    const loadInitialData = async () => {
+      console.log("🔄 AuthContext useEffect - Caricamento dati...");
+      try {
+        const storedToken = localStorage.getItem("auth_token");
+        const storedUser = localStorage.getItem("user");
+
+        console.log("📦 storedToken:", storedToken);
+        console.log("📦 storedUser:", storedUser);
+
+        if (storedToken) {
+          setToken(storedToken);
+
+          // Se abbiamo il token, prova a ricaricare i dati dal server
+          // Questo assicura che i dati siano sempre aggiornati
+          try {
+            const response = await fetch("http://localhost:3000/api/profile/me", {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${storedToken}`,
+              },
+            });
+
+            if (response.ok) {
+              const data = await response.json();
+              console.log("✅ Dati aggiornati dal server:", data);
+
+              if (data.success && data.user) {
+                setUser(data.user);
+                localStorage.setItem("user", JSON.stringify(data.user));
+                console.log("💾 Dati salvati dal server");
+              }
+            } else if (response.status === 401) {
+              // Token scaduto o non valido
+              console.log("⚠️ Token non valido, uso dati localStorage");
+              localStorage.removeItem("auth_token");
+              localStorage.removeItem("user");
+              setToken(null);
+              setUser(null);
+            } else if (storedUser) {
+              // Server non disponibile, usa i dati del localStorage come fallback
+              console.log("⚠️ Server non disponibile, uso dati localStorage");
+              const parsedUser = JSON.parse(storedUser);
+              setUser(parsedUser);
+            }
+          } catch (fetchError) {
+            // Errore di rete, usa i dati del localStorage come fallback
+            console.log("⚠️ Errore di rete, uso dati localStorage:", fetchError);
+            if (storedUser) {
+              const parsedUser = JSON.parse(storedUser);
+              setUser(parsedUser);
+            }
+          }
+        } else {
+          console.log("❌ Nessun token nel localStorage");
+        }
+      } catch (error) {
+        console.error(
+          "Errore nel caricamento dei dati di autenticazione:",
+          error
+        );
+        // Pulisci il localStorage se i dati sono corrotti
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialData();
   }, []);
 
   const login = async (email: string, password: string) => {
@@ -213,7 +298,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Chiamata API per completare l'onboarding
       const response = await fetch(
-        "http://localhost:3000/api/profile/onboarding", // Assicurati che questo URL sia corretto
+        "http://localhost:3000/api/profile/onboarding",
         {
           method: "POST",
           headers: {
@@ -229,32 +314,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const result = await response.json();
-      console.log("✅ Risposta API:", result);
+      console.log("✅ Risposta API onboarding:", result);
 
-      // Aggiorna l'utente con i nuovi dati dal backend
-      const updatedUser: User = {
-        ...user!,
-        onboardingCompleted: true,
-        profile: {
-          name: data.name,
-          surname: data.surname,
-          age: data.age,
-          height: data.height,
-          weight: data.weight,
-          gender: data.gender,
-          activityLevel: data.activityLevel,
-          goal: data.goal,
-          dailyCalories:
-            result.calories?.TARGET ||
-            result.user?.goals?.targetCalories ||
-            2000,
-        },
-      };
-      console.log("User prima dell'aggiornamento:", user);
-      console.log("User dopo l'aggiornamento:", updatedUser);
-
-      setUser(updatedUser);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      // Invece di costruire manualmente l'utente, ricarica i dati dal server
+      // Questo garantisce che i dati siano sempre consistenti con il backend
+      if (result.success && result.user) {
+        console.log("📦 Aggiornamento user da risposta onboarding:", result.user);
+        setUser(result.user);
+        localStorage.setItem("user", JSON.stringify(result.user));
+      } else {
+        // Fallback: ricarica i dati dal server usando refreshUser
+        console.log("🔄 Ricaricamento dati utente dal server...");
+        await refreshUser();
+      }
     } catch (error) {
       console.error("Errore durante il completamento dell'onboarding:", error);
       throw error;
@@ -268,6 +340,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     completeOnboarding,
+    refreshUser,
     isAuthenticated: !!token,
     isLoading,
   };

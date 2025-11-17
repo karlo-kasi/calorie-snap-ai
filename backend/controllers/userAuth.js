@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import { generateToken } from "../services/tokenService.js";
 import { hashPassword, comparePassword } from "../services/passwordService.js";
+import { formatUserData } from "../utils/userFormatter.js";
 
 const newUser = async (req, res) => {
   try {
@@ -26,15 +27,13 @@ const newUser = async (req, res) => {
 
     const token = generateToken(newUser.id);
 
+    // Usa la funzione helper per formattare i dati utente
+    const userData = formatUserData(newUser);
+
     res.status(201).json({
       message: "Registrazione avvenuta con successo",
       token,
-      user: {
-        id: newUser._id,
-        email: newUser.email,
-        name: newUser.username,
-        onboardingCompleted: false,
-      },
+      user: userData,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -74,36 +73,10 @@ const loginUser = async (req, res) => {
 
     const token = generateToken(user.id);
 
-    // Prepara i dati utente da restituire
-    const userData = {
-      id: user._id,
-      email: user.email,
-      name: user.username || user.profile?.name || user.email.split("@")[0],
-      onboardingCompleted: user.goals?.onboardingCompleted || false,
-    };
+    // Usa la funzione helper per formattare i dati utente
+    const userData = formatUserData(user);
 
     console.log("📤 DEBUG LOGIN - userData da inviare:", userData);
-
-    // Aggiungi i dati del profilo se esistono
-    if (user.profile && user.goals?.onboardingCompleted) {
-      userData.profile = {
-        name: user.profile.name,
-        surname: user.profile.surname,
-        age: user.profile.age,
-        height: user.profile.height,
-        weight: user.profile.weight,
-        gender: user.profile.gender,
-        activityLevel: user.profile.activityLevel,
-        goal: user.goals.weeklyGoal,
-        dailyCalories: user.goals.targetCalories,
-      };
-      console.log("✅ DEBUG LOGIN - Profile aggiunto:", userData.profile);
-    } else {
-      console.log("⚠️ DEBUG LOGIN - Profile NON aggiunto:", {
-        hasProfile: !!user.profile,
-        onboardingCompleted: user.goals?.onboardingCompleted,
-      });
-    }
 
     res.status(200).json({
       message: "Login avvenuto con successo!",
