@@ -87,6 +87,8 @@ const loginUser = async (req, res) => {
     // Aggiungi i dati del profilo se esistono
     if (user.profile && user.goals?.onboardingCompleted) {
       userData.profile = {
+        name: user.profile.name,
+        surname: user.profile.surname,
         age: user.profile.age,
         height: user.profile.height,
         weight: user.profile.weight,
