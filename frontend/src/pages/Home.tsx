@@ -10,7 +10,7 @@ import { OnboardingModal } from "../components/OnboardingModal";
 import { useAuth } from "../contexts/AuthContext";
 
 export const Home = () => {
-  const { user, token, isAuthenticated, isLoading } = useAuth();
+  const { user, token, meals, isAuthenticated, isLoading } = useAuth();
 
   console.log("🏠 Home - Debug Info:");
   console.log("  - User:", user);
@@ -72,13 +72,18 @@ export const Home = () => {
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Colonna sinistra */}
         <div className="flex flex-col gap-6 flex-1">
-          {/* Welcome Section */}
-          <Card className="p-6 gradient-primary text-primary-foreground overflow-hidden relative">
-            <div className="relative z-10">
-              <h1 className="text-2xl font-bold mb-2">
+          {/* Welcome Section - PIÙ GRANDE */}
+          <Card className="p-8 gradient-primary text-primary-foreground overflow-hidden relative min-h-[200px] flex items-center">
+            <div className="relative z-10 space-y-3">
+              <h1 className="text-3xl font-bold">
                 Ciao {(user?.profile?.name || user?.name)?.trim()}! 👋
               </h1>
-              <p className="opacity-90">Oggi stai facendo un ottimo lavoro!</p>
+              <p className="text-lg opacity-90">
+                Oggi stai facendo un ottimo lavoro!
+              </p>
+              <p className="text-sm opacity-80">
+                Continua così per raggiungere i tuoi obiettivi
+              </p>
             </div>
             <img
               src={heroImage}
@@ -88,17 +93,17 @@ export const Home = () => {
           </Card>
 
           {/* Quick Actions */}
-          <Card className="p-4">
-            <h2 className="font-semibold mb-4">Azioni Rapide</h2>
+          <Card className="p-6">
+            <h2 className="font-semibold mb-4 text-lg">Azioni Rapide</h2>
             <div className="grid grid-cols-3 gap-3">
               {quickActions.map((action) => (
                 <Link key={action.label} to={action.to}>
                   <Button
                     variant="outline"
-                    className="h-16 flex-col space-y-1 w-full hover:bg-primary/5 hover:border-primary/30"
+                    className="h-20 flex-col space-y-2 w-full hover:bg-primary/5 hover:border-primary/30"
                   >
-                    <action.icon size={20} />
-                    <span className="text-xs">{action.label}</span>
+                    <action.icon size={24} />
+                    <span className="text-xs font-medium">{action.label}</span>
                   </Button>
                 </Link>
               ))}
@@ -137,9 +142,41 @@ export const Home = () => {
           </Link>
         </div>
 
-        {recentFoods.map((food) => (
-          <FoodCard key={food.id} {...food} />
-        ))}
+        {/* Controlla se ci sono meals */}
+        {meals && meals.length > 0 ? (
+          meals
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+            .slice(0, 3)
+            .map((meal) => (
+              <FoodCard
+                key={meal._id}
+                id={meal._id}
+                name={meal.dishName}
+                calories={meal.totalCalories}
+                quantity={`${meal.totalWeight}g`}
+                time={new Date(meal.createdAt).toLocaleTimeString("it-IT", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              />
+            ))
+        ) : (
+          <Card className="p-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Nessun pasto registrato oggi. Inizia ad aggiungerne uno! 🍽️
+            </p>
+            <Link to="/add">
+              <Button className="mt-3" size="sm">
+                <Plus className="w-4 h-4 mr-2" />
+                Aggiungi pasto
+              </Button>
+            </Link>
+          </Card>
+        )}
       </div>
 
       {/* Onboarding Modal */}

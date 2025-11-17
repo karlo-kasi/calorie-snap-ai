@@ -1,60 +1,123 @@
 import React from "react";
 import { Card } from "../../components/ui/card";
-import { Progress } from "../../components/ui/progress";
+import { format, isToday } from "date-fns";
+import { it } from "date-fns/locale";
+import { Flame, Target, TrendingDown } from "lucide-react";
 
 interface CalorieCardProps {
   consumed: number;
   goal: number;
   remaining: number;
+  date?: Date;
 }
 
-export const CalorieCard = ({
+export const CalorieCard: React.FC<CalorieCardProps> = ({
   consumed,
   goal,
   remaining,
-}: CalorieCardProps) => {
+  date = new Date(),
+}) => {
   const percentage = Math.min((consumed / goal) * 100, 100);
+  const isCurrentDay = isToday(date);
+  const isOverGoal = consumed > goal;
+
+  // SVG circle settings
+  const size = 140;
+  const stroke = 12;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - percentage / 100);
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-white h-full flex flex-col justify-center">
-      <div className="text-center space-y-4">
-        <div className="relative">
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-primary/20 to-energy/20 p-1">
-            <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
-                  {consumed}
-                </div>
-                <div className="text-xs text-muted-foreground">consumate</div>
-              </div>
-            </div>
-          </div>
-          <div
-            className="absolute inset-0 w-32 h-32 mx-auto rounded-full calorie-progress"
-            style={{ "--progress": percentage } as React.CSSProperties}
-          />
+    <Card className="p-6 bg-gradient-to-br from-white to-primary/5 h-full flex flex-col relative">
+      {/* Header con data */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <Flame className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold text-lg">Calorie</h3>
         </div>
+        <div className="">
+          {isCurrentDay && (
+            <span className="inline-flex items-center px-2 py-0.5 text-sm font-medium rounded-full bg-green-100 text-green-800">
+              Oggi
+            </span>
+          )}
+        </div>
+      </div>
 
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-lg font-semibold text-energy">{goal}</div>
-            <div className="text-xs text-muted-foreground">Obiettivo</div>
-          </div>
-          <div>
-            <div className="text-lg font-semibold text-success">
-              {remaining}
-            </div>
-            <div className="text-xs text-muted-foreground">Rimaste</div>
-          </div>
-          <div>
-            <div className="text-lg font-semibold text-primary">
+      {/* Circular Progress - PIÙ GRANDE */}
+      <div className="flex-1 flex items-center justify-center">
+        <div className="relative">
+          <svg
+            className="w-36 h-36"
+            viewBox={`0 0 ${size} ${size}`}
+            aria-label={`${consumed} calorie consumate su ${goal}`}
+          >
+            <defs>
+              <linearGradient id="calorieGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor={isOverGoal ? "#ef4444" : "#06b6d4"} />
+                <stop offset="100%" stopColor={isOverGoal ? "#dc2626" : "#10b981"} />
+              </linearGradient>
+            </defs>
+
+            {/* Background ring */}
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke="#f1f5f9"
+              strokeWidth={stroke}
+              fill="transparent"
+            />
+
+            {/* Progress ring */}
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke="url(#calorieGradient)"
+              strokeWidth={stroke}
+              strokeLinecap="round"
+              fill="transparent"
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+              className="transition-all duration-500"
+            />
+          </svg>
+
+          {/* Testo centrale */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className="text-4xl font-bold text-primary">{consumed}</div>
+            <div className="text-sm text-muted-foreground">/ {goal} kcal</div>
+            <div className={`text-xs font-medium mt-1 ${isOverGoal ? 'text-red-600' : 'text-green-600'}`}>
               {Math.round(percentage)}%
             </div>
-            <div className="text-xs text-muted-foreground">Raggiunto</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats compatte sotto */}
+      <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t">
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50">
+          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+            <TrendingDown className="w-4 h-4 text-green-600" />
+          </div>
+          <div>
+            <div className="text-lg font-bold text-green-700">{remaining > 0 ? remaining : 0}</div>
+            <div className="text-xs text-green-600">Rimaste</div>
           </div>
         </div>
 
-        <Progress value={percentage} className="h-2" />
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50">
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+            <Target className="w-4 h-4 text-blue-600" />
+          </div>
+          <div>
+            <div className="text-lg font-bold text-blue-700">{goal}</div>
+            <div className="text-xs text-blue-600">Obiettivo</div>
+          </div>
+        </div>
       </div>
     </Card>
   );
