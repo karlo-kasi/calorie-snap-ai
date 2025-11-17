@@ -37,7 +37,7 @@ export const Home = () => {
   // Mock data - in real app this would come from state/API
   const calorieData = {
     consumed: 1420,
-    goal: user?.profile?.dailyCalories || 2000,
+    goal: user?.profile?.dailyCalories,
     remaining: (user?.profile?.dailyCalories || 2000) - 1420,
   };
 
@@ -76,7 +76,7 @@ export const Home = () => {
           <Card className="p-6 gradient-primary text-primary-foreground overflow-hidden relative">
             <div className="relative z-10">
               <h1 className="text-2xl font-bold mb-2">
-                Ciao {user?.profile?.name.trim()}! 👋
+                Ciao {user?.profile?.name}! 👋
               </h1>
               <p className="opacity-90">Oggi stai facendo un ottimo lavoro!</p>
             </div>
