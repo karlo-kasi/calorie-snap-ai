@@ -1,4 +1,5 @@
 import Meal from "../models/Meal.js";
+import User from "../models/User.js";
 import { analyzeFoodImage } from "../services/claudeService.js";
 
 /**
@@ -8,7 +9,7 @@ import { analyzeFoodImage } from "../services/claudeService.js";
 export const createMeals = async (req, res, next) => {
   try {
     const { imageBase64, mediaType, mealType } = req.body;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Validazione input
     if (!imageBase64) {
@@ -159,7 +160,7 @@ export const getAllMeals = async (req, res, next) => {
 
 export const getTodayMeals = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Calcola inizio e fine giornata (00:00:00 - 23:59:59 di oggi)
     const startOfDay = new Date();
@@ -219,10 +220,106 @@ export const getTodayMeals = async (req, res, next) => {
   }
 };
 
+/**
+ * GET /api/meals/analysis/date/:date
+ * Ottiene i pasti per una data specifica (formato: YYYY-MM-DD)
+ */
+export const getMealsByDate = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const { date } = req.params;
+
+    // Validazione formato data (YYYY-MM-DD)
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+      return res.status(400).json({
+        success: false,
+        message: "Formato data non valido. Usare YYYY-MM-DD",
+      });
+    }
+
+    // Parsing della data
+    const targetDate = new Date(date);
+
+    // Verifica che sia una data valida
+    if (isNaN(targetDate.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "Data non valida",
+      });
+    }
+
+    // Calcola inizio e fine giornata per la data specificata
+    const startOfDay = new Date(targetDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(targetDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    console.log(`🔍 getMealsByDate - Cerco pasti per ${date}:`, {
+      userId,
+      startOfDay: startOfDay.toISOString(),
+      endOfDay: endOfDay.toISOString(),
+    });
+
+    // Query pasti per la data specificata
+    const meals = await Meal.find({
+      userId,
+      date: { $gte: startOfDay, $lte: endOfDay },
+    })
+      .sort({ date: 1, mealType: 1 })
+      .select("-imageBase64");
+
+    // Calcola statistiche giornaliere
+    const stats = meals.reduce(
+      (acc, meal) => {
+        acc.totalCalories += meal.totalCalories;
+        acc.totalProteins += meal.totalMacros.proteins;
+        acc.totalCarbs += meal.totalMacros.carbohydrates;
+        acc.totalFats += meal.totalMacros.fats;
+        return acc;
+      },
+      {
+        totalCalories: 0,
+        totalProteins: 0,
+        totalCarbs: 0,
+        totalFats: 0,
+      }
+    );
+
+    // Prendi target dall'utente
+    const user = await User.findById(userId).select("goals.targetCalories");
+    const targetCalories = user?.goals?.targetCalories || 0;
+    const remaining = targetCalories - stats.totalCalories;
+
+    console.log(`✅ Trovati ${meals.length} pasti per ${date}`);
+
+    res.status(200).json({
+      success: true,
+      count: meals.length,
+      date: date,
+      data: meals,
+      dailyStats: {
+        consumed: {
+          calories: Math.round(stats.totalCalories),
+          proteins: Math.round(stats.totalProteins),
+          carbohydrates: Math.round(stats.totalCarbs),
+          fats: Math.round(stats.totalFats),
+        },
+        target: targetCalories,
+        remaining: remaining,
+      },
+    });
+  } catch (error) {
+    console.error("❌ Errore in getMealsByDate:", error);
+    next(error);
+  }
+};
+
 export const getMealById = async (req, res, next) => {
   try {
     const { mealId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Trova il pasto
     const meal = await Meal.findById(mealId);
@@ -258,7 +355,7 @@ export const getMealById = async (req, res, next) => {
 export const deleteMealById = async (req, res, next) => {
   try {
     const { mealId } = req.params;
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Trova il pasto
     const meal = await Meal.findById(mealId);

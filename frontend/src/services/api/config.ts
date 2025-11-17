@@ -17,10 +17,11 @@ export const API_ENDPOINTS = {
     STATS_MONTHLY: `${API_BASE_URL}/profile/stats-monthly`,
   },
   MEALS: {
-    CREATE: `${API_BASE_URL}/meal/upload`,
-    TODAY: `${API_BASE_URL}/analysis/stats`,
-    BY_ID: (id: string) => `${API_BASE_URL}/analysis/${id}`,
-    DELETE: (id: string) => `${API_BASE_URL}/analysis/${id}`,
+    CREATE: `${API_BASE_URL}/meals/meal/upload`,
+    TODAY: `${API_BASE_URL}/meals/analysis/stats`,
+    BY_DATE: (date: string) => `${API_BASE_URL}/meals/analysis/date/${date}`,
+    BY_ID: (id: string) => `${API_BASE_URL}/meals/analysis/${id}`,
+    DELETE: (id: string) => `${API_BASE_URL}/meals/analysis/${id}`,
   },
 };
 

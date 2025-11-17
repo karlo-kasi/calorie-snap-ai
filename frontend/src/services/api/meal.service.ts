@@ -60,6 +60,30 @@ export const getTodayMeals = async (
 };
 
 /**
+ * Ottiene i pasti per una data specifica (formato: YYYY-MM-DD)
+ */
+export const getMealsByDate = async (
+  token: string,
+  date: string
+): Promise<MealsListResponse> => {
+  console.log("📅 API: Caricamento pasti per data:", date);
+
+  const response = await fetch(API_ENDPOINTS.MEALS.BY_DATE(date), {
+    method: "GET",
+    headers: createAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    throw new Error("Errore durante il caricamento dei pasti");
+  }
+
+  const result = await response.json();
+  console.log("✅ API: Pasti ricevuti per", date, ":", result);
+
+  return result;
+};
+
+/**
  * Ottiene un pasto specifico per ID
  */
 export const getMealById = async (
