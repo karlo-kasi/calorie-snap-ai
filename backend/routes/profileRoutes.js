@@ -10,7 +10,7 @@ import {
 const router = express.Router()
 
 
-router.post("/setup", setupInformation)
+router.post("/onboarding", setupInformation)
 
 router.get("/stats", getDashboard)
 

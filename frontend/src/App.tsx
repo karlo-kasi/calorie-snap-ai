@@ -12,6 +12,7 @@ import { Profile } from "./pages/Profile";
 import { Login } from "./pages/Login";
 import { MainLayout } from "./components/Layout/MainLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { OnboardingGuard } from "./components/OnboardingGuard";
 import { AuthProvider } from "./contexts/AuthContext";
 import NotFound from "./pages/NotFound";
 
@@ -39,9 +40,11 @@ const App = () => (
                 path="/"
                 element={
                   <ProtectedRoute>
-                    <MainLayout>
-                      <Home />
-                    </MainLayout>
+                    <OnboardingGuard>
+                      <MainLayout>
+                        <Home />
+                      </MainLayout>
+                    </OnboardingGuard>
                   </ProtectedRoute>
                 }
               />
@@ -49,9 +52,11 @@ const App = () => (
                 path="/add"
                 element={
                   <ProtectedRoute>
-                    <MainLayout>
-                      <AddFood />
-                    </MainLayout>
+                    <OnboardingGuard>
+                      <MainLayout>
+                        <AddFood />
+                      </MainLayout>
+                    </OnboardingGuard>
                   </ProtectedRoute>
                 }
               />
@@ -59,9 +64,11 @@ const App = () => (
                 path="/diary"
                 element={
                   <ProtectedRoute>
-                    <MainLayout>
-                      <Diary />
-                    </MainLayout>
+                    <OnboardingGuard>
+                      <MainLayout>
+                        <Diary />
+                      </MainLayout>
+                    </OnboardingGuard>
                   </ProtectedRoute>
                 }
               />
@@ -69,9 +76,11 @@ const App = () => (
                 path="/stats"
                 element={
                   <ProtectedRoute>
-                    <MainLayout>
-                      <Stats />
-                    </MainLayout>
+                    <OnboardingGuard>
+                      <MainLayout>
+                        <Stats />
+                      </MainLayout>
+                    </OnboardingGuard>
                   </ProtectedRoute>
                 }
               />
@@ -79,9 +88,11 @@ const App = () => (
                 path="/profile"
                 element={
                   <ProtectedRoute>
-                    <MainLayout>
-                      <Profile />
-                    </MainLayout>
+                    <OnboardingGuard>
+                      <MainLayout>
+                        <Profile />
+                      </MainLayout>
+                    </OnboardingGuard>
                   </ProtectedRoute>
                 }
               />
