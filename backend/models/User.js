@@ -42,7 +42,27 @@ const userSchema = new mongoose.Schema(
       targetCalories: Number,
       weeklyGoal: {
         type: String,
-        enum: ["lose_1kg_week", "lose_0_5kg_week", "maintain", "gain_0_5kg_week", "gain_1kg_week"],
+        enum: [
+          "lose_1kg_week",
+          "lose_0_5kg_week",
+          "maintain",
+          "gain_0_5kg_week",
+          "gain_1kg_week",
+        ],
+      },
+      macroTargets: {
+        proteins: {
+          type: Number,
+          default: 0,
+        },
+        carbs: {
+          type: Number,
+          default: 0,
+        },
+        fats: {
+          type: Number,
+          default: 0,
+        },
       },
       onboardingCompleted: {
         type: Boolean,

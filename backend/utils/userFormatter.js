@@ -30,6 +30,11 @@ export const formatUserData = (user) => {
       activityLevel: user.profile.activityLevel,
       goal: user.goals.weeklyGoal,
       dailyCalories: user.goals.targetCalories,
+      macroTargets: {
+        proteins: user.goals.macroTargets?.proteins || 0,
+        carbs: user.goals.macroTargets?.carbs || 0,
+        fats: user.goals.macroTargets?.fats || 0,
+      },
     };
   }
 

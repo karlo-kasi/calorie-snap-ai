@@ -13,7 +13,7 @@ export const getCurrentUser = async (req, res) => {
     if (!userId) {
       return res.status(401).json({
         success: false,
-        message: "Utente non autenticato"
+        message: "Utente non autenticato",
       });
     }
 
@@ -22,7 +22,7 @@ export const getCurrentUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Utente non trovato"
+        message: "Utente non trovato",
       });
     }
 
@@ -39,11 +39,127 @@ export const getCurrentUser = async (req, res) => {
       success: true,
       user: userData,
     });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Utente non trovato",
+      });
+    }
   } catch (err) {
     console.error("❌ Errore in getCurrentUser:", err);
     res.status(500).json({
       success: false,
-      error: err.message
+      error: err.message,
+    });
+  }
+};
+
+export const editUserInformation = async (req, res) => {
+  try {
+    console.log("📝 Modifica informazioni utente - Dati ricevuti:", req.body);
+    console.log("👤 UserId dal middleware:", req.userId);
+
+    const userId = req.userId;
+    const { nome, cognome, età, altezza, peso, sesso, attività, goal } = req.body;
+
+    // Validazione autenticazione
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Utente non autenticato",
+      });
+    }
+
+    // Verifica che l'utente esista
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "Utente non trovato",
+      });
+    }
+
+    // Validazione dati - almeno un campo deve essere presente
+    if (!nome && !cognome && !età && !altezza && !peso && !sesso && !attività && !goal) {
+      return res.status(400).json({
+        success: false,
+        message: "Nessun dato da aggiornare",
+      });
+    }
+
+    // Usa i valori esistenti come fallback se non vengono forniti nuovi valori
+    const finalNome = nome || existingUser.profile?.name;
+    const finalCognome = cognome || existingUser.profile?.surname;
+    const finalEtà = età || existingUser.profile?.age;
+    const finalAltezza = altezza || existingUser.profile?.height;
+    const finalPeso = peso || existingUser.profile?.weight;
+    const finalSesso = sesso || existingUser.profile?.gender;
+    const finalAttività = attività || existingUser.profile?.activityLevel;
+    const finalGoal = goal || existingUser.goals?.weeklyGoal;
+
+    // Ricalcola le calorie e i macro con i nuovi dati
+    console.log("🧮 Ricalcolo calorie con parametri:", {
+      età: finalEtà,
+      altezza: finalAltezza,
+      peso: finalPeso,
+      sesso: finalSesso,
+      attività: finalAttività,
+      goal: finalGoal,
+    });
+
+    const objectCalories = caloriesCalculator(
+      finalEtà,
+      finalAltezza,
+      finalPeso,
+      finalSesso,
+      finalAttività,
+      finalGoal
+    );
+    console.log("✅ Calorie ricalcolate:", objectCalories);
+
+    // Mappa il gender se è stato fornito un nuovo valore
+    const gender = sesso ? mapGender(sesso) : existingUser.profile?.gender;
+
+    // Aggiorna l'utente nel database
+    console.log("💾 Aggiornamento utente con ID:", userId);
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        username: `${finalNome} ${finalCognome}`,
+        "profile.name": finalNome,
+        "profile.surname": finalCognome,
+        "profile.age": finalEtà,
+        "profile.gender": gender,
+        "profile.weight": finalPeso,
+        "profile.height": finalAltezza,
+        "profile.activityLevel": finalAttività,
+        "goals.targetCalories": objectCalories.TARGET,
+        "goals.weeklyGoal": finalGoal,
+        "goals.macroTargets.proteins": objectCalories.macros.proteins,
+        "goals.macroTargets.carbs": objectCalories.macros.carbos,
+        "goals.macroTargets.fats": objectCalories.macros.fats,
+      },
+      { new: true, runValidators: true }
+    );
+
+    console.log("✅ Utente aggiornato con successo");
+
+    // Usa la funzione helper per formattare i dati utente
+    const userData = formatUserData(user);
+
+    res.status(200).json({
+      success: true,
+      message: "Informazioni utente aggiornate con successo",
+      user: userData,
+      calories: objectCalories,
+    });
+  } catch (err) {
+    console.error("❌ Errore in editUserInformation:", err);
+    console.error("Stack trace:", err.stack);
+    res.status(500).json({
+      success: false,
+      error: err.message,
     });
   }
 };
@@ -70,7 +186,7 @@ export const setupInformation = async (req, res) => {
       console.log("❌ Dati mancanti!");
       return res.status(400).json({
         success: false,
-        message: "Dati mancanti!"
+        message: "Dati mancanti!",
       });
     }
 
@@ -80,12 +196,19 @@ export const setupInformation = async (req, res) => {
       console.log("❌ UserId mancante!");
       return res.status(401).json({
         success: false,
-        message: "Utente non autenticato"
+        message: "Utente non autenticato",
       });
     }
 
     // Calcola le calorie
-    console.log("🧮 Calcolo calorie con parametri:", { età, altezza, peso, sesso, attività, goal });
+    console.log("🧮 Calcolo calorie con parametri:", {
+      età,
+      altezza,
+      peso,
+      sesso,
+      attività,
+      goal,
+    });
     const objectCalories = caloriesCalculator(
       età,
       altezza,
@@ -114,6 +237,9 @@ export const setupInformation = async (req, res) => {
         "profile.activityLevel": attività,
         "goals.targetCalories": objectCalories.TARGET,
         "goals.weeklyGoal": goal,
+        "goals.macroTargets.proteins": objectCalories.macros.proteins,
+        "goals.macroTargets.carbs": objectCalories.macros.carbos,
+        "goals.macroTargets.fats": objectCalories.macros.fats,
         "goals.onboardingCompleted": true,
       },
       { new: true, runValidators: true }
@@ -124,7 +250,7 @@ export const setupInformation = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "Utente non trovato"
+        message: "Utente non trovato",
       });
     }
 
@@ -142,7 +268,7 @@ export const setupInformation = async (req, res) => {
     console.error("Stack trace:", err.stack);
     res.status(500).json({
       success: false,
-      error: err.message
+      error: err.message,
     });
   }
 };
@@ -250,7 +376,7 @@ export const getWeeklyStats = async (req, res, next) => {
     const userId = req.user.id;
 
     // Step 1: Recupera target calorico
-    const user = await User.findById(userId).select('goals.targetCalories');
+    const user = await User.findById(userId).select("goals.targetCalories");
     const targetCalories = user?.goals?.targetCalories || 0;
 
     // Step 2: Calcola inizio e fine settimana (ultimi 7 giorni)
@@ -264,34 +390,34 @@ export const getWeeklyStats = async (req, res, next) => {
     // Step 3: Recupera tutti i pasti della settimana
     const weekMeals = await Meal.find({
       userId,
-      date: { $gte: startOfWeek, $lte: endOfWeek }
+      date: { $gte: startOfWeek, $lte: endOfWeek },
     })
-      .select('date totalCalories totalMacros mealType')
+      .select("date totalCalories totalMacros mealType")
       .sort({ date: 1 });
 
     // Step 4: Raggruppa pasti per giorno
     const dailyData = {};
-    
+
     // Inizializza tutti i 7 giorni
     for (let i = 0; i < 7; i++) {
       const day = new Date(startOfWeek);
       day.setDate(day.getDate() + i);
-      const dateKey = day.toISOString().split('T')[0]; // YYYY-MM-DD
-      
+      const dateKey = day.toISOString().split("T")[0]; // YYYY-MM-DD
+
       dailyData[dateKey] = {
         date: dateKey,
         calories: 0,
         proteins: 0,
         carbohydrates: 0,
         fats: 0,
-        mealsCount: 0
+        mealsCount: 0,
       };
     }
 
     // Popola con i dati reali
-    weekMeals.forEach(meal => {
-      const dateKey = meal.date.toISOString().split('T')[0];
-      
+    weekMeals.forEach((meal) => {
+      const dateKey = meal.date.toISOString().split("T")[0];
+
       if (dailyData[dateKey]) {
         dailyData[dateKey].calories += meal.totalCalories;
         dailyData[dateKey].proteins += meal.totalMacros.proteins;
@@ -302,28 +428,30 @@ export const getWeeklyStats = async (req, res, next) => {
     });
 
     // Step 5: Converti in array e arrotonda valori
-    const dailyArray = Object.values(dailyData).map(day => ({
+    const dailyArray = Object.values(dailyData).map((day) => ({
       ...day,
       calories: Math.round(day.calories),
       proteins: Math.round(day.proteins),
       carbohydrates: Math.round(day.carbohydrates),
       fats: Math.round(day.fats),
-      deficit: targetCalories - day.calories // Positivo = deficit, Negativo = surplus
+      deficit: targetCalories - day.calories, // Positivo = deficit, Negativo = surplus
     }));
 
     // Step 6: Calcola statistiche settimanali
-    const totalCalories = dailyArray.reduce((sum, day) => sum + day.calories, 0);
-    const daysWithMeals = dailyArray.filter(day => day.mealsCount > 0).length;
-    const averageCalories = daysWithMeals > 0 
-      ? Math.round(totalCalories / daysWithMeals) 
-      : 0;
+    const totalCalories = dailyArray.reduce(
+      (sum, day) => sum + day.calories,
+      0
+    );
+    const daysWithMeals = dailyArray.filter((day) => day.mealsCount > 0).length;
+    const averageCalories =
+      daysWithMeals > 0 ? Math.round(totalCalories / daysWithMeals) : 0;
 
-    const daysInDeficit = dailyArray.filter(day => 
-      day.mealsCount > 0 && day.calories < targetCalories
+    const daysInDeficit = dailyArray.filter(
+      (day) => day.mealsCount > 0 && day.calories < targetCalories
     ).length;
 
-    const daysInSurplus = dailyArray.filter(day => 
-      day.mealsCount > 0 && day.calories > targetCalories
+    const daysInSurplus = dailyArray.filter(
+      (day) => day.mealsCount > 0 && day.calories > targetCalories
     ).length;
 
     const totalMeals = dailyArray.reduce((sum, day) => sum + day.mealsCount, 0);
@@ -333,9 +461,9 @@ export const getWeeklyStats = async (req, res, next) => {
       success: true,
       data: {
         period: {
-          start: startOfWeek.toISOString().split('T')[0],
-          end: endOfWeek.toISOString().split('T')[0],
-          days: 7
+          start: startOfWeek.toISOString().split("T")[0],
+          end: endOfWeek.toISOString().split("T")[0],
+          days: 7,
         },
         summary: {
           averageCalories,
@@ -343,12 +471,11 @@ export const getWeeklyStats = async (req, res, next) => {
           daysTracked: daysWithMeals,
           daysInDeficit,
           daysInSurplus,
-          targetCalories
+          targetCalories,
         },
-        dailyBreakdown: dailyArray
-      }
+        dailyBreakdown: dailyArray,
+      },
     });
-
   } catch (error) {
     console.error("❌ Errore in getWeeklyStats:", error);
     next(error);
@@ -361,7 +488,7 @@ export const getMonthlyStats = async (req, res, next) => {
     const userId = req.user.id;
 
     // Step 1: Recupera target calorico
-    const user = await User.findById(userId).select('goals.targetCalories');
+    const user = await User.findById(userId).select("goals.targetCalories");
     const targetCalories = user?.goals?.targetCalories || 0;
 
     // Step 2: Calcola inizio e fine mese (ultimi 30 giorni)
@@ -375,34 +502,34 @@ export const getMonthlyStats = async (req, res, next) => {
     // Step 3: Recupera tutti i pasti del mese
     const monthMeals = await Meal.find({
       userId,
-      date: { $gte: startOfMonth, $lte: endOfMonth }
+      date: { $gte: startOfMonth, $lte: endOfMonth },
     })
-      .select('date totalCalories totalMacros mealType')
+      .select("date totalCalories totalMacros mealType")
       .sort({ date: 1 });
 
     // Step 4: Raggruppa pasti per giorno
     const dailyData = {};
-    
+
     // Inizializza tutti i 30 giorni
     for (let i = 0; i < 30; i++) {
       const day = new Date(startOfMonth);
       day.setDate(day.getDate() + i);
-      const dateKey = day.toISOString().split('T')[0];
-      
+      const dateKey = day.toISOString().split("T")[0];
+
       dailyData[dateKey] = {
         date: dateKey,
         calories: 0,
         proteins: 0,
         carbohydrates: 0,
         fats: 0,
-        mealsCount: 0
+        mealsCount: 0,
       };
     }
 
     // Popola con i dati reali
-    monthMeals.forEach(meal => {
-      const dateKey = meal.date.toISOString().split('T')[0];
-      
+    monthMeals.forEach((meal) => {
+      const dateKey = meal.date.toISOString().split("T")[0];
+
       if (dailyData[dateKey]) {
         dailyData[dateKey].calories += meal.totalCalories;
         dailyData[dateKey].proteins += meal.totalMacros.proteins;
@@ -413,47 +540,52 @@ export const getMonthlyStats = async (req, res, next) => {
     });
 
     // Step 5: Converti in array e arrotonda valori
-    const dailyArray = Object.values(dailyData).map(day => ({
+    const dailyArray = Object.values(dailyData).map((day) => ({
       ...day,
       calories: Math.round(day.calories),
       proteins: Math.round(day.proteins),
       carbohydrates: Math.round(day.carbohydrates),
       fats: Math.round(day.fats),
-      deficit: targetCalories - day.calories
+      deficit: targetCalories - day.calories,
     }));
 
     // Step 6: Calcola statistiche mensili
-    const totalCalories = dailyArray.reduce((sum, day) => sum + day.calories, 0);
-    const daysWithMeals = dailyArray.filter(day => day.mealsCount > 0).length;
-    const averageCalories = daysWithMeals > 0 
-      ? Math.round(totalCalories / daysWithMeals) 
-      : 0;
+    const totalCalories = dailyArray.reduce(
+      (sum, day) => sum + day.calories,
+      0
+    );
+    const daysWithMeals = dailyArray.filter((day) => day.mealsCount > 0).length;
+    const averageCalories =
+      daysWithMeals > 0 ? Math.round(totalCalories / daysWithMeals) : 0;
 
-    const daysInDeficit = dailyArray.filter(day => 
-      day.mealsCount > 0 && day.calories < targetCalories
+    const daysInDeficit = dailyArray.filter(
+      (day) => day.mealsCount > 0 && day.calories < targetCalories
     ).length;
 
-    const daysInSurplus = dailyArray.filter(day => 
-      day.mealsCount > 0 && day.calories > targetCalories
+    const daysInSurplus = dailyArray.filter(
+      (day) => day.mealsCount > 0 && day.calories > targetCalories
     ).length;
 
     const totalMeals = dailyArray.reduce((sum, day) => sum + day.mealsCount, 0);
 
     // Calcola totali macro del mese
-    const totalMacros = dailyArray.reduce((acc, day) => ({
-      proteins: acc.proteins + day.proteins,
-      carbohydrates: acc.carbohydrates + day.carbohydrates,
-      fats: acc.fats + day.fats
-    }), { proteins: 0, carbohydrates: 0, fats: 0 });
+    const totalMacros = dailyArray.reduce(
+      (acc, day) => ({
+        proteins: acc.proteins + day.proteins,
+        carbohydrates: acc.carbohydrates + day.carbohydrates,
+        fats: acc.fats + day.fats,
+      }),
+      { proteins: 0, carbohydrates: 0, fats: 0 }
+    );
 
     // Step 7: Risposta
     res.status(200).json({
       success: true,
       data: {
         period: {
-          start: startOfMonth.toISOString().split('T')[0],
-          end: endOfMonth.toISOString().split('T')[0],
-          days: 30
+          start: startOfMonth.toISOString().split("T")[0],
+          end: endOfMonth.toISOString().split("T")[0],
+          days: 30,
         },
         summary: {
           averageCalories,
@@ -466,13 +598,12 @@ export const getMonthlyStats = async (req, res, next) => {
           totalMacros: {
             proteins: Math.round(totalMacros.proteins),
             carbohydrates: Math.round(totalMacros.carbohydrates),
-            fats: Math.round(totalMacros.fats)
-          }
+            fats: Math.round(totalMacros.fats),
+          },
         },
-        dailyBreakdown: dailyArray
-      }
+        dailyBreakdown: dailyArray,
+      },
     });
-
   } catch (error) {
     console.error("❌ Errore in getMonthlyStats:", error);
     next(error);

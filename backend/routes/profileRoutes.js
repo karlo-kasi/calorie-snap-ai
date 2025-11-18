@@ -2,6 +2,7 @@ import express from "express";
 import {
   getCurrentUser,
   setupInformation,
+  editUserInformation,
   getDashboard,
   getWeeklyStats,
   getMonthlyStats
@@ -15,6 +16,9 @@ router.get("/me", authMiddleware, getCurrentUser);
 
 // POST /api/profile/onboarding - Completa l'onboarding
 router.post("/onboarding", authMiddleware, setupInformation);
+
+// PUT /api/profile/me - Modifica le informazioni dell'utente
+router.put("/edit-user", authMiddleware, editUserInformation);
 
 // GET /api/profile/stats - Dashboard stats
 router.get("/stats", authMiddleware, getDashboard);
