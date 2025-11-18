@@ -33,7 +33,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <div className="h-screen flex w-full bg-gradient-to-br from-background via-background to-primary/5">
         <AppSidebar />
         <SidebarInset className="flex flex-col h-screen w-full">
-          <header className="sticky top-0 z-10 h-16 flex items-center px-6 bg-white-100 border-b border-border">
+          <header className="sticky top-0 z-10 h-16 flex items-center px-6 bg-card border-b border-border">
             <SidebarTrigger className="p-2 hover:bg-primary/10 rounded-lg transition-colors">
               <Menu className="w-5 h-5" />
             </SidebarTrigger>
@@ -47,7 +47,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 overflow-y-auto gap-4 p-6">
+          <main className="flex-1 overflow-y-auto gap-4 p-6 bg-[hsl(var(--main-background))]">
             <div className="max-w-6xl mx-auto w-full">{children}</div>
           </main>
         </SidebarInset>

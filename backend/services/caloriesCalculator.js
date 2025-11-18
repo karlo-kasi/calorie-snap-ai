@@ -1,4 +1,4 @@
-import { macroCalculator } from "./macroCalculator";
+import { macroCalculator } from "./macroCalculator.js";
 
 const ACTIVITY_MULTIPLIERS = {
   sedentary: 1.2,

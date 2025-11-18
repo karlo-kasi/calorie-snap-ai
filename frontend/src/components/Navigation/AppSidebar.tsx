@@ -56,9 +56,9 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarGroup className="group-data-[collapsible=icon]/sidebar-wrapper:p-0">
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2 px-2 group-data-[collapsible=icon]/sidebar-wrapper:px-0 group-data-[collapsible=icon]/sidebar-wrapper:space-y-3">
+            <SidebarMenu className="space-y-2 px-2 group-data-[collapsible=icon]/sidebar-wrapper:px-0 group-data-[collapsible=icon]/sidebar-wrapper:!space-y-0 group-data-[collapsible=icon]/sidebar-wrapper:!gap-0">
               {navItems.map((item) => (
                 <SidebarMenuItem
                   key={item.to}
@@ -68,10 +68,10 @@ export function AppSidebar() {
                     asChild
                     isActive={location.pathname === item.to}
                     tooltip={item.label}
-                    className="group-data-[collapsible=icon]/sidebar-wrapper:h-12 group-data-[collapsible=icon]/sidebar-wrapper:w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:p-0"
+                    className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0 items-center"
                   >
                     <Link to={item.to} className="flex items-center gap-3">
-                      <item.icon className="shrink-0 w-5 h-5 group-data-[collapsible=icon]/sidebar-wrapper:w-6 group-data-[collapsible=icon]/sidebar-wrapper:h-6" />
+                      <item.icon className="sidebar-icon shrink-0 w-5 h-5" />
                       <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
                         {item.label}
                       </span>
@@ -91,10 +91,10 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               tooltip="Impostazioni"
-              className="group-data-[collapsible=icon]/sidebar-wrapper:h-12 group-data-[collapsible=icon]/sidebar-wrapper:w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:p-0"
+              className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0"
             >
               <Link to="/settings" className="flex items-center gap-3">
-                <Settings className="shrink-0 w-5 h-5 group-data-[collapsible=icon]/sidebar-wrapper:w-6 group-data-[collapsible=icon]/sidebar-wrapper:h-6" />
+                <Settings className="sidebar-icon shrink-0 w-5 h-5" />
                 <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
                   Impostazioni
                 </span>
@@ -105,9 +105,9 @@ export function AppSidebar() {
             <SidebarMenuButton
               tooltip="Esci"
               onClick={handleLogout}
-              className="group-data-[collapsible=icon]/sidebar-wrapper:h-12 group-data-[collapsible=icon]/sidebar-wrapper:w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:p-0"
+              className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0"
             >
-              <LogOut className="shrink-0 w-5 h-5 group-data-[collapsible=icon]/sidebar-wrapper:w-6 group-data-[collapsible=icon]/sidebar-wrapper:h-6" />
+              <LogOut className="sidebar-icon shrink-0 w-5 h-5" />
               <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
                 Esci
               </span>

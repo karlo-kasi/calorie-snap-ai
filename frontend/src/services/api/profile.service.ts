@@ -3,6 +3,7 @@
  */
 
 import { User, OnboardingData } from "../../types/user.types";
+import { Meal } from "../../types/meal.types";
 import { API_ENDPOINTS, createAuthHeaders } from "./config";
 
 interface UserResponse {
@@ -62,13 +63,23 @@ interface DashboardStats {
       };
       remaining: number;
       mealsCount: number;
-      meals: any[];
+      meals: Meal[];
     };
     progress: {
       percentage: number;
       status: "on_track" | "over" | "under";
     };
   };
+}
+
+interface DailyBreakdown {
+  date: string;
+  calories: number;
+  proteins: number;
+  carbohydrates: number;
+  fats: number;
+  mealsCount: number;
+  deficit?: number;
 }
 
 interface WeeklyStats {
@@ -87,7 +98,7 @@ interface WeeklyStats {
       daysInSurplus: number;
       targetCalories: number;
     };
-    dailyBreakdown: any[];
+    dailyBreakdown: DailyBreakdown[];
   };
 }
 
@@ -113,7 +124,7 @@ interface MonthlyStats {
         fats: number;
       };
     };
-    dailyBreakdown: any[];
+    dailyBreakdown: DailyBreakdown[];
   };
 }
 
@@ -193,7 +204,7 @@ export const editUserInformation = async (
   console.log("✏️ API: Modifica informazioni utente...");
 
   // Adatta i dati per il backend (solo i campi forniti)
-  const backendData: any = {};
+  const backendData: Record<string, string | number> = {};
 
   if (data.name) backendData.nome = data.name;
   if (data.surname) backendData.cognome = data.surname;
