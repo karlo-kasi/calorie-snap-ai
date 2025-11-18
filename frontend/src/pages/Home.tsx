@@ -1,5 +1,6 @@
 import React from "react";
 import { CalorieCard } from "../components/CalorieCard/CalorieCard";
+import { MacroNutrientsCard } from "../components/MacroNutrientsCard/MacroNutrientsCard";
 import { FoodCard } from "../components/FoodCard/FoodCard";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -10,7 +11,7 @@ import { OnboardingModal } from "../components/OnboardingModal";
 import { useAuth } from "../contexts/AuthContext";
 
 export const Home = () => {
-  const { user, token, meals, isAuthenticated, isLoading } = useAuth();
+  const { user, token, meals, dailyStats, isAuthenticated, isLoading } = useAuth();
 
   console.log("🏠 Home - Debug Info:");
   console.log("  - User:", user);
@@ -40,23 +41,6 @@ export const Home = () => {
     goal: user?.profile?.dailyCalories,
     remaining: (user?.profile?.dailyCalories || 2000) - 1420,
   };
-
-  const recentFoods = [
-    {
-      id: "1",
-      name: "Insalata mista",
-      calories: 150,
-      quantity: "1 porzione",
-      time: "13:30",
-    },
-    {
-      id: "2",
-      name: "Pollo alla griglia",
-      calories: 280,
-      quantity: "150g",
-      time: "12:45",
-    },
-  ];
 
   const quickActions = [
     { icon: Camera, label: "Scatta foto", to: "/add?mode=photo" },
@@ -120,16 +104,29 @@ export const Home = () => {
         </div>
       </div>
 
-      {/* Daily Tips */}
-      <Card className="p-4 bg-gradient-to-r from-energy/10 to-warning/10 border-energy/20">
-        <h3 className="font-medium mb-2 text-energy-foreground">
-          💡 Consiglio del giorno
-        </h3>
-        <p className="text-sm text-muted-foreground">
-          Bere un bicchiere d'acqua prima dei pasti può aiutarti a sentirti più
-          sazio e controllare le porzioni.
-        </p>
-      </Card>
+      {/* Daily Tips & Macronutrients Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Daily Tips */}
+        <Card className="p-4 bg-gradient-to-r from-energy/10 to-warning/10 border-energy/20">
+          <h3 className="font-medium mb-2 text-energy-foreground">
+            💡 Consiglio del giorno
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Bere un bicchiere d'acqua prima dei pasti può aiutarti a sentirti più
+            sazio e controllare le porzioni.
+          </p>
+        </Card>
+
+        {/* Macronutrients Card */}
+        <MacroNutrientsCard
+          proteins={dailyStats?.consumed?.proteins || 0}
+          carbs={dailyStats?.consumed?.carbohydrates || 0}
+          fats={dailyStats?.consumed?.fats || 0}
+          proteinsGoal={150}
+          carbsGoal={250}
+          fatsGoal={70}
+        />
+      </div>
 
       {/* Recent Foods */}
       <div className="space-y-3">
