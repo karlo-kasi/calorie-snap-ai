@@ -9,9 +9,11 @@ export const API_ENDPOINTS = {
     LOGIN: `${API_BASE_URL}/auth/login`,
     REGISTER: `${API_BASE_URL}/auth/register`,
   },
+  ONBOARDING: {
+    SETUP: `${API_BASE_URL}/onboarding/setup`,
+  },
   PROFILE: {
     ME: `${API_BASE_URL}/profile/me`,
-    ONBOARDING: `${API_BASE_URL}/profile/onboarding`,
     EDIT_USER: `${API_BASE_URL}/profile/edit-user`,
     STATS: `${API_BASE_URL}/profile/stats`,
     STATS_WEEKLY: `${API_BASE_URL}/profile/stats-weekly`,

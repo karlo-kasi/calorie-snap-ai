@@ -167,7 +167,7 @@ export const completeOnboarding = async (
     goal: data.goal,
   };
 
-  const response = await fetch(API_ENDPOINTS.PROFILE.ONBOARDING, {
+  const response = await fetch(API_ENDPOINTS.ONBOARDING.SETUP, {
     method: "POST",
     headers: createAuthHeaders(token),
     body: JSON.stringify(backendData),
