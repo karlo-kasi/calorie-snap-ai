@@ -1,9 +1,11 @@
+import { macroCalculator } from "./macroCalculator";
+
 const ACTIVITY_MULTIPLIERS = {
   sedentary: 1.2,
   light: 1.375,
   moderate: 1.55,
   active: 1.725,
-  very_active: 1.9
+  very_active: 1.9,
 };
 
 const DAILY_GOAL_ADJUSTMENTS = {
@@ -27,11 +29,14 @@ const caloriesCalculator = (eta, altezza, peso, sesso, attività, goal) => {
 
   const TARGET = TDEE + DAILY_GOAL_ADJUSTMENTS[goal];
 
+  const macros = macroCalculator(peso, Math.round(TARGET), goal, attività);
+
   return {
     BMR: Math.round(BMR),
     TDEE: Math.round(TDEE),
     TARGET: Math.round(TARGET),
     deficit: DAILY_GOAL_ADJUSTMENTS[goal],
+    macros: macros,
   };
 };
 
