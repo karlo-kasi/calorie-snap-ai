@@ -6,8 +6,7 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Camera, Search, Upload, Plus, Loader2} from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
-import { fileToBase64 } from '../services/fileToBase64';
-import { analysisService } from '../services/API';
+import { analyzeImageFile } from '../services/api/meal.service';
 
 export const AddFood = () => {
   const [foodName, setFoodName] = useState('');
@@ -43,10 +42,10 @@ export const AddFood = () => {
   // Invia foto al backend
   const sendPhotoToBackend = async (file: File) => {
     setIsAnalyzing(true);
-    
+
     try {
-      // Converti in base64
-      const data = await analysisService.analyzeImageFile(file);
+      // Analizza l'immagine
+      const data = await analyzeImageFile(file);
 
       // ✅ CORREZIONE: Usa la struttura corretta
       if (data.success && data.data) {

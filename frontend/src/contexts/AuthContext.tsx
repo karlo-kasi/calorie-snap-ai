@@ -12,6 +12,7 @@ import {
 } from "../types/user.types";
 import { Meal, DailyStats } from "../types/meal.types";
 import * as authService from "../services/api/auth.service";
+import * as profileService from "../services/api/profile.service";
 import * as mealService from "../services/api/meal.service";
 
 // Export dei tipi per retrocompatibilità
@@ -72,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
 
-      const data = await authService.getCurrentUser(storedToken);
+      const data = await profileService.getCurrentUser(storedToken);
 
       if (data.success && data.user) {
         setUser(data.user);
@@ -143,7 +144,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
         // Prova a ricaricare i dati dal server per sincronizzare
         try {
-          const data = await authService.getCurrentUser(storedToken);
+          const data = await profileService.getCurrentUser(storedToken);
 
           if (data.success && data.user) {
             setUser(data.user);
@@ -230,7 +231,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         throw new Error("Utente non autenticato");
       }
 
-      const result = await authService.completeOnboarding(token, data);
+      const result = await profileService.completeOnboarding(token, data);
 
       // Aggiorna i dati utente con la risposta
       if (result.success && result.user) {

@@ -9,6 +9,31 @@ import {
   MealsListResponse,
 } from "../../types/meal.types";
 import { API_ENDPOINTS, createAuthHeaders } from "./config";
+import { fileToBase64 } from "../fileToBase64";
+
+/**
+ * Risposta dell'analisi AI di un'immagine
+ */
+export interface AnalysisResponse {
+  success: boolean;
+  message: string;
+  data: {
+    dishName: string;
+    ingredients: string[];
+    calories: number;
+    macronutrients: {
+      proteins: number;
+      carbohydrates: number;
+      fats: number;
+    };
+    portionSize: string;
+    confidence: string;
+    notes: string;
+    imageBase64: string;
+    _id: string;
+    createdAt: string;
+  };
+}
 
 /**
  * Crea un nuovo pasto analizzando un'immagine
@@ -141,4 +166,47 @@ export const deleteMeal = async (
   console.log("✅ API: Pasto eliminato");
 
   return result;
+};
+
+/**
+ * Analizza un'immagine di cibo usando l'AI
+ * @deprecated Usa createMeal invece per creare un pasto completo
+ */
+export const analyzeImageFile = async (file: File): Promise<AnalysisResponse> => {
+  console.log("📸 API: Analisi immagine con AI...");
+
+  // Converti in base64
+  const base64Image = await fileToBase64(file);
+
+  // Determina il tipo MIME
+  const mediaType = file.type || "image/jpeg";
+
+  console.log("📤 Invio foto al backend...");
+  console.log("   - Tipo:", mediaType);
+  console.log("   - Dimensione base64:", base64Image.length);
+
+  // Nota: Questo endpoint potrebbe essere deprecato
+  // Verifica quale endpoint usa il backend per l'analisi
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/analysis";
+
+  const response = await fetch(`${API_URL}/upload`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      imageBase64: base64Image,
+      mediaType: mediaType,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Errore durante l'analisi");
+  }
+
+  console.log("✅ Analisi completata:", data);
+
+  return data;
 };

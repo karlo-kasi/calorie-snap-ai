@@ -2,7 +2,7 @@
  * Servizio API per autenticazione
  */
 
-import { User, OnboardingData } from "../../types/user.types";
+import { User } from "../../types/user.types";
 import { API_ENDPOINTS, createAuthHeaders } from "./config";
 
 interface LoginResponse {
@@ -15,20 +15,6 @@ interface RegisterResponse {
   message: string;
   token: string;
   user: User;
-}
-
-interface UserResponse {
-  success: boolean;
-  user: User;
-}
-
-interface OnboardingResponse {
-  success: boolean;
-  message: string;
-  user: User;
-  calories?: {
-    TARGET: number;
-  };
 }
 
 /**
@@ -82,70 +68,4 @@ export const registerUser = async (
   console.log("✅ API: Registrazione completata:", data);
 
   return data;
-};
-
-/**
- * Ottiene i dati dell'utente corrente
- */
-export const getCurrentUser = async (token: string): Promise<UserResponse> => {
-  console.log("🔄 API: Caricamento dati utente corrente...");
-
-  const response = await fetch(API_ENDPOINTS.PROFILE.ME, {
-    method: "GET",
-    headers: createAuthHeaders(token),
-  });
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error("UNAUTHORIZED");
-    }
-    throw new Error("Errore nel caricamento dei dati utente");
-  }
-
-  const data = await response.json();
-  console.log("✅ API: Dati utente ricevuti:", data);
-
-  return data;
-};
-
-/**
- * Completa l'onboarding
- */
-export const completeOnboarding = async (
-  token: string,
-  data: OnboardingData
-): Promise<OnboardingResponse> => {
-  console.log("📋 API: Completamento onboarding...");
-
-  // Adatta i dati per il backend
-  const backendData = {
-    nome: data.name,
-    cognome: data.surname,
-    età: data.age,
-    altezza: data.height,
-    peso: data.weight,
-    sesso:
-      data.gender === "female"
-        ? "donna"
-        : data.gender === "male"
-        ? "uomo"
-        : "altro",
-    attività: data.activityLevel,
-    goal: data.goal,
-  };
-
-  const response = await fetch(API_ENDPOINTS.PROFILE.ONBOARDING, {
-    method: "POST",
-    headers: createAuthHeaders(token),
-    body: JSON.stringify(backendData),
-  });
-
-  if (!response.ok) {
-    throw new Error("Errore durante il completamento dell'onboarding");
-  }
-
-  const result = await response.json();
-  console.log("✅ API: Onboarding completato:", result);
-
-  return result;
 };

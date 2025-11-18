@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
   PROFILE: {
     ME: `${API_BASE_URL}/profile/me`,
     ONBOARDING: `${API_BASE_URL}/profile/onboarding`,
+    EDIT_USER: `${API_BASE_URL}/profile/edit-user`,
     STATS: `${API_BASE_URL}/profile/stats`,
     STATS_WEEKLY: `${API_BASE_URL}/profile/stats-weekly`,
     STATS_MONTHLY: `${API_BASE_URL}/profile/stats-monthly`,

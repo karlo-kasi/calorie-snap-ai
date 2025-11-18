@@ -4,14 +4,16 @@ import "dotenv/config";
 import connectDB from "./config/database.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import mealsRoutes from "./routes/mealsRoutes.js";
-import authRoutes from "./routes/authRoutes.js"
-import profileRoutes from "./routes/profileRoutes.js"
+import authRoutes from "./routes/authRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
+import onboardingRoutes from "./routes/onboardingRoutes.js";
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
 // Abilita Cors
-app.use(cors({
+app.use(
+  cors({
     origin: "*",
   })
 );
@@ -26,8 +28,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/auth", authRoutes)
-app.use("/api/profile", profileRoutes)
+app.use("/api/auth", authRoutes);
+app.use("/api/onboarding", onboardingRoutes);
+app.use("/api/profile", profileRoutes);
 app.use("/api/meals", mealsRoutes);
 
 // 404 Handler
