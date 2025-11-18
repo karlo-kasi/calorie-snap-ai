@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 .env
+API_ENDPOINTS_FINAL.md
+DEBUG_MEALS.md
 
 # Editor directories and files
 .vscode/*
