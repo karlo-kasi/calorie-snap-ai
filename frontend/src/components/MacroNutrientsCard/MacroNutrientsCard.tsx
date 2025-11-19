@@ -59,7 +59,7 @@ export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
     },
   ];
 
-   const calculatePercentage = (current: number, goal: number) => {
+  const calculatePercentage = (current: number, goal: number) => {
     return Math.min((current / goal) * 100, 100);
   };
 
@@ -102,26 +102,14 @@ export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
               </div>
 
               {/* Progress bar */}
-              <div className="relative">
-                <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500 ease-out"
-                    style={{
-                      width: `${percentage}%`,
-                      backgroundColor: macro.color,
-                    }}
-                  />
-                </div>
-                {/* Percentage label */}
+              <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="absolute -top-1 text-xs font-medium"
+                  className="h-full rounded-full transition-all duration-500 ease-out"
                   style={{
-                    left: `${Math.max(percentage - 5, 0)}%`,
-                    color: macro.color,
+                    width: `${percentage}%`,
+                    backgroundColor: macro.color,
                   }}
-                >
-                  {Math.round(percentage)}%
-                </div>
+                />
               </div>
             </div>
           );

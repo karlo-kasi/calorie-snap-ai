@@ -21,7 +21,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
       // Add small delay to let the component render before syncing
       const timer = setTimeout(() => {
         setIsChecked(resolvedTheme === "dark");
-      }, 50);
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [resolvedTheme, mounted]);
@@ -52,7 +52,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         className
       )}
       style={{
-        backgroundColor: isChecked ? "#10b981" : "#cbd5e1"
+        backgroundColor: isChecked ? "#10b981" : "#e2e8f0"
       }}
       aria-label="Toggle theme"
     >
