@@ -190,4 +190,18 @@ All colors MUST be HSL.
   [data-collapsible="icon"] .sidebar-icon {
     transform: scale(1.2);
   }
+
+  /* Theme toggle animations */
+  .theme-toggle {
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .theme-toggle-circle {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .theme-toggle-icon {
+    transition: opacity 0.9s ease-in-out,
+                transform 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
 }

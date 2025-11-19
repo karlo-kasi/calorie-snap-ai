@@ -34,14 +34,14 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         <AppSidebar />
         <SidebarInset className="flex flex-col h-screen w-full">
           <header className="sticky top-0 z-10 h-16 flex items-center px-6 bg-card border-b border-border">
-            <SidebarTrigger className="p-2 hover:bg-primary/10 rounded-lg transition-colors">
-              <Menu className="w-5 h-5" />
+            <SidebarTrigger className="h-8 w-8 p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors">
+              <Menu className="w-4 h-4" />
             </SidebarTrigger>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="icon">
+              <Button asChild variant="ghost" size="icon" className="h-8 w-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
                 <Link to="/profile">
-                  <User className="w-5 h-5" />
+                  <User className="w-4 h-4" />
                 </Link>
               </Button>
               <ThemeToggle />

@@ -89,7 +89,7 @@ export const Home = () => {
                     <Link key={action.label} to={action.to}>
                       <Button
                         variant="outline"
-                        className="h-20 flex-col space-y-2 w-full hover:bg-primary/5 hover:border-primary/30"
+                        className="h-20 flex-col space-y-2 w-full hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:border-sidebar-accent"
                       >
                         <action.icon size={24} />
                         <span className="text-xs font-medium">
@@ -118,18 +118,7 @@ export const Home = () => {
           </div>
 
           {/* Daily Tips & Macronutrients Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Daily Tips */}
-            <Card className="p-4 bg-gradient-to-r from-energy/10 to-warning/10 border-energy/20">
-              <h3 className="font-medium mb-2 text-energy-foreground">
-                💡 Consiglio del giorno
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Bere un bicchiere d'acqua prima dei pasti può aiutarti a
-                sentirti più sazio e controllare le porzioni.
-              </p>
-            </Card>
-
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* Macronutrients Card */}
             <MacroNutrientsCard
               proteins={dailyStats?.consumed?.proteins || 0}
@@ -139,54 +128,74 @@ export const Home = () => {
               carbsGoal={user?.profile?.macroTargets?.carbs}
               fatsGoal={user?.profile?.macroTargets?.fats}
             />
-          </div>
 
-          {/* Recent Foods */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Pasti Recenti</h2>
-              <Link to="/diary">
-                <Button variant="ghost" size="sm">
-                  Vedi tutto
-                </Button>
-              </Link>
-            </div>
-
-            {/* Controlla se ci sono meals */}
-            {meals && meals.length > 0 ? (
-              meals
-                .sort(
-                  (a, b) =>
-                    new Date(b.createdAt).getTime() -
-                    new Date(a.createdAt).getTime()
-                )
-                .slice(0, 3)
-                .map((meal) => (
-                  <FoodCard
-                    key={meal._id}
-                    id={meal._id}
-                    name={meal.dishName}
-                    calories={meal.totalCalories}
-                    quantity={`${meal.totalWeight}g`}
-                    time={new Date(meal.createdAt).toLocaleTimeString("it-IT", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  />
-                ))
-            ) : (
-              <Card className="p-6 text-center">
-                <p className="text-sm text-muted-foreground">
-                  Nessun pasto registrato oggi. Inizia ad aggiungerne uno! 🍽️
-                </p>
-                <Link to="/add">
-                  <Button className="mt-3" size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Aggiungi pasto
-                  </Button>
-                </Link>
+            {/* Right Column - Daily Tips & Recent Foods */}
+            <div className="space-y-6">
+              {/* Daily Tips */}
+              <Card className="p-6 bg-gradient-to-r from-energy/10 to-warning/10 border-energy/20">
+                <div className="space-y-2">
+                  <h3 className="font-medium text-sm text-energy-foreground">
+                    💡 Consiglio del giorno
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Bere un bicchiere d'acqua prima dei pasti può aiutarti a
+                    sentirti più sazio e controllare le porzioni.
+                  </p>
+                </div>
               </Card>
-            )}
+
+              {/* Recent Foods */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-semibold">Pasti Recenti</h2>
+                  <Link to="/diary">
+                    <Button variant="ghost" size="sm">
+                      Vedi tutto
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Controlla se ci sono meals */}
+                {meals && meals.length > 0 ? (
+                  meals
+                    .sort(
+                      (a, b) =>
+                        new Date(b.createdAt).getTime() -
+                        new Date(a.createdAt).getTime()
+                    )
+                    .slice(0, 3)
+                    .map((meal) => (
+                      <FoodCard
+                        key={meal._id}
+                        id={meal._id}
+                        name={meal.dishName}
+                        calories={meal.totalCalories}
+                        quantity={`${meal.totalWeight}g`}
+                        time={new Date(meal.createdAt).toLocaleTimeString(
+                          "it-IT",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
+                      />
+                    ))
+                ) : (
+                  <Card className="p-6 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Nessun pasto registrato oggi. Inizia ad aggiungerne uno!
+                      🍽️
+                    </p>
+                    <Link to="/add">
+                      <Button className="mt-3" size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Aggiungi pasto
+                      </Button>
+                    </Link>
+                  </Card>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Onboarding Modal */}
