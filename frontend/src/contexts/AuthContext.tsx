@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
@@ -34,10 +34,12 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+
+  const [user, setUser] = useState<User | null>(null);
   const [meals, setMeals] = useState<Meal[]>([]);
   const [dailyStats, setDailyStats] = useState<DailyStats | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isMealsLoading, setIsMealsLoading] = useState(false);
 
