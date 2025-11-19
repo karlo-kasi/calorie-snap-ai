@@ -10,7 +10,7 @@ import { Diary } from "./pages/Diary";
 import { Stats } from "./pages/Stats";
 import { Profile } from "./pages/Profile";
 import { Login } from "./pages/Login";
-import { MainLayout } from "./components/Layout/MainLayout";
+import { MainLayout } from "./Layout/MainLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { OnboardingGuard } from "./components/OnboardingGuard";
 import { AuthProvider } from "./contexts/AuthContext";

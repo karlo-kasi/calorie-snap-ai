@@ -1,27 +1,10 @@
+//Components
+import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarSeparator } from "../../components/ui/sidebar";
+//Icons
+import { Home, BookOpen, BarChart3, Utensils, Settings, LogOut, UtensilsCrossed,} from "lucide-react";
+//react-router
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  Home,
-  Plus,
-  BookOpen,
-  BarChart3,
-  User,
-  Utensils,
-  Settings,
-  LogOut,
-  UtensilsCrossed,
-} from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarSeparator,
-} from "../../components/ui/sidebar";
+//Context
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../hooks/use-toast";
 
@@ -87,10 +70,10 @@ export function AppSidebar() {
                     asChild
                     isActive={location.pathname === item.to}
                     tooltip={item.label}
-                    className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0 items-center"
+                    className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0 items-center transition-all duration-200 hover:translate-x-1 hover:scale-105"
                   >
                     <Link to={item.to} className="flex items-center gap-3">
-                      <item.icon className="sidebar-icon shrink-0 w-5 h-5" />
+                      <item.icon className="sidebar-icon shrink-0 w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
                       <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
                         {item.label}
                       </span>
@@ -110,26 +93,14 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               tooltip="Impostazioni"
-              className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0"
+              className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0 transition-all duration-200 hover:translate-x-1 hover:scale-105"
             >
               <Link to="/settings" className="flex items-center gap-3">
-                <Settings className="sidebar-icon shrink-0 w-5 h-5" />
+                <Settings className="sidebar-icon shrink-0 w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
                 <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
                   Impostazioni
                 </span>
               </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem className="group-data-[collapsible=icon]/sidebar-wrapper:flex group-data-[collapsible=icon]/sidebar-wrapper:justify-center">
-            <SidebarMenuButton
-              tooltip="Esci"
-              onClick={handleLogout}
-              className="group-data-[collapsible=icon]/sidebar-wrapper:!h-12 group-data-[collapsible=icon]/sidebar-wrapper:!w-12 group-data-[collapsible=icon]/sidebar-wrapper:justify-center group-data-[collapsible=icon]/sidebar-wrapper:!p-0"
-            >
-              <LogOut className="sidebar-icon shrink-0 w-5 h-5" />
-              <span className="whitespace-nowrap group-data-[collapsible=icon]/sidebar-wrapper:hidden">
-                Esci
-              </span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

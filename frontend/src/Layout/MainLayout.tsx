@@ -1,16 +1,16 @@
 import React from "react";
-import { BottomNav } from "../Navigation/BottomNav";
-import { AppSidebar } from "../Navigation/AppSidebar";
+import { BottomNav } from "../components/Navigation/BottomNav";
+import { AppSidebar } from "../components/Navigation/AppSidebar";
 import {
   SidebarProvider,
   SidebarInset,
   SidebarTrigger,
-} from "../../components/ui/sidebar";
-import { useIsMobile } from "../../hooks/use-mobile";
+} from "../components/ui/sidebar";
+import { useIsMobile } from "../hooks/use-mobile";
 import { Menu, User } from "lucide-react";
-import { ThemeToggle } from "../../components/ui/theme-toggle";
+import { ThemeToggle } from "../components/ui/theme-toggle";
 import { Link } from "react-router-dom";
-import { Button } from "../../components/ui/button";
+import { Button } from "../components/ui/button";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -39,7 +39,12 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             </SidebarTrigger>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="icon" className="h-8 w-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+              <Button
+                asChild
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              >
                 <Link to="/profile">
                   <User className="w-4 h-4" />
                 </Link>
