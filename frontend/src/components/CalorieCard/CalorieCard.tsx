@@ -29,7 +29,7 @@ export const CalorieCard: React.FC<CalorieCardProps> = ({
   const offset = circumference * (1 - percentage / 100);
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-card to-primary/5 h-full flex flex-col relative">
+    <Card className="p-6 bg-gradient-to-br from-card to-primary/5 h-full flex flex-col relative cursor-pointer">
       {/* Header con data */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">

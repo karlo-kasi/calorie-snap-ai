@@ -36,6 +36,7 @@ export const Home = () => {
     { icon: Upload, label: "Importa", to: "/add?mode=import" },
   ];
 
+
   return (
     <>
       {isLoading ? (
@@ -105,7 +106,10 @@ export const Home = () => {
             {/* Colonna destra */}
             <div className="flex-1 flex">
               {/* Calorie Tracking */}
-              <div className="flex-1">
+              <Link
+                to="/diary"
+                className="flex-1 transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              >
                 <CalorieCard
                   consumed={dailyStats?.consumed?.calories || 0}
                   goal={
@@ -113,7 +117,7 @@ export const Home = () => {
                   }
                   remaining={dailyStats?.remaining || 0}
                 />
-              </div>
+              </Link>
             </div>
           </div>
 
