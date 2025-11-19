@@ -1,5 +1,15 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Plus, BookOpen, BarChart3, User, Utensils, Settings, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Home,
+  Plus,
+  BookOpen,
+  BarChart3,
+  User,
+  Utensils,
+  Settings,
+  LogOut,
+  UtensilsCrossed,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -11,16 +21,15 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarSeparator,
-} from '../../components/ui/sidebar';
-import { useAuth } from '../../contexts/AuthContext';
-import { useToast } from '../../hooks/use-toast';
+} from "../../components/ui/sidebar";
+import { useAuth } from "../../contexts/AuthContext";
+import { useToast } from "../../hooks/use-toast";
 
 const navItems = [
-  { to: '/', icon: Home, label: 'Home' },
-  { to: '/add', icon: Plus, label: 'Aggiungi Cibo' },
-  { to: '/diary', icon: BookOpen, label: 'Diario' },
-  { to: '/stats', icon: BarChart3, label: 'Statistiche' },
-  { to: '/profile', icon: User, label: 'Profilo' },
+  { to: "/", icon: Home, label: "Home" },
+  { to: "/stats", icon: BarChart3, label: "Statistiche" },
+  { to: "/add", icon: UtensilsCrossed, label: "Aggiungi Cibo" },
+  { to: "/diary", icon: BookOpen, label: "Diario" },
 ];
 
 export function AppSidebar() {
@@ -35,13 +44,19 @@ export function AppSidebar() {
       title: "Disconnesso",
       description: "Sei stato disconnesso con successo",
     });
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
-    <Sidebar collapsible="icon" className="transition-all duration-300 ease-in-out">
+    <Sidebar
+      collapsible="icon"
+      className="transition-all duration-300 ease-in-out"
+    >
       <SidebarHeader className="p-4 transition-all duration-300">
-        <Link to="/" className="flex items-center gap-3 group/logo w-full min-h-[48px]">
+        <Link
+          to="/"
+          className="flex items-center gap-3 group/logo w-full min-h-[48px]"
+        >
           {/* Logo con transizione - centrato quando collassata */}
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shrink-0 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group-data-[collapsible=icon]/sidebar-wrapper:mx-auto">
             <Utensils className="w-6 h-6 text-white" />
@@ -49,8 +64,12 @@ export function AppSidebar() {
 
           {/* Testo con fade out - nascosto quando sidebar è collapsed */}
           <div className="flex flex-col overflow-hidden transition-all duration-300 group-data-[collapsible=icon]/sidebar-wrapper:w-0 group-data-[collapsible=icon]/sidebar-wrapper:opacity-0">
-            <h2 className="text-xl font-bold text-foreground whitespace-nowrap">CalorieTracker</h2>
-            <p className="text-sm text-muted-foreground whitespace-nowrap">Monitora la tua dieta</p>
+            <h2 className="text-xl font-bold text-foreground whitespace-nowrap">
+              CalorieTracker
+            </h2>
+            <p className="text-sm text-muted-foreground whitespace-nowrap">
+              Monitora la tua dieta
+            </p>
           </div>
         </Link>
       </SidebarHeader>

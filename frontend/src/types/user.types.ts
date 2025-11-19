@@ -4,12 +4,19 @@
 
 import { Meal, DailyStats } from "./meal.types";
 
+export interface MacroNutrients {
+  proteins: number,
+  carbs: number,
+  fats: number
+}
+
 export interface UserProfile {
   name: string;
   surname: string;
   age?: number;
   height?: number;
   weight?: number;
+  macroTargets: MacroNutrients,
   gender?: "male" | "female" | "other";
   activityLevel?: string;
   goal?: string;

@@ -22,12 +22,12 @@ interface MacroNutrientsCardProps {
 }
 
 export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
-  proteins = 0,
-  carbs = 0,
-  fats = 0,
-  proteinsGoal = 150,
-  carbsGoal = 250,
-  fatsGoal = 70,
+  proteins,
+  carbs,
+  fats,
+  proteinsGoal,
+  carbsGoal,
+  fatsGoal,
 }) => {
   const macros: MacroNutrient[] = [
     {
@@ -36,7 +36,7 @@ export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
       goal: proteinsGoal,
       unit: "g",
       color: "#ef4444", // red
-      bgColor: "rgb(254, 226, 226)", // red-100
+      bgColor: "rgba(239, 68, 68, 0.1)", // red with opacity
       icon: Drumstick,
     },
     {
@@ -45,7 +45,7 @@ export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
       goal: carbsGoal,
       unit: "g",
       color: "#f59e0b", // amber
-      bgColor: "rgb(254, 243, 199)", // amber-100
+      bgColor: "rgba(245, 158, 11, 0.1)", // amber with opacity
       icon: Wheat,
     },
     {
@@ -54,7 +54,7 @@ export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
       goal: fatsGoal,
       unit: "g",
       color: "#3b82f6", // blue
-      bgColor: "rgb(219, 234, 254)", // blue-100
+      bgColor: "rgba(59, 130, 246, 0.1)", // blue with opacity
       icon: Droplet,
     },
   ];
@@ -64,7 +64,7 @@ export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-white to-primary/5 h-full flex flex-col">
+    <Card className="p-6 bg-gradient-to-br from-card to-primary/5 h-full flex flex-col">
       {/* Header */}
       <div className="mb-6">
         <h3 className="font-semibold text-lg">Macronutrienti</h3>
@@ -103,7 +103,7 @@ export const MacroNutrientsCard: React.FC<MacroNutrientsCardProps> = ({
 
               {/* Progress bar */}
               <div className="relative">
-                <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-full h-2.5 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-500 ease-out"
                     style={{

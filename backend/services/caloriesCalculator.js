@@ -9,11 +9,11 @@ const ACTIVITY_MULTIPLIERS = {
 };
 
 const DAILY_GOAL_ADJUSTMENTS = {
-  lose_1kg_week: -1000,
-  lose_0_5kg_week: -500,
+  lose_1kg_week: -500,
+  lose_0_5kg_week: -250,
   maintain: 0,
-  gain_0_5kg_week: 500,
-  gain_1kg_week: 1000,
+  gain_0_5kg_week: 250,
+  gain_1kg_week: 500,
 };
 
 const caloriesCalculator = (eta, altezza, peso, sesso, attività, goal) => {

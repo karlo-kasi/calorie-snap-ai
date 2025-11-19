@@ -29,7 +29,7 @@ export const CalorieCard: React.FC<CalorieCardProps> = ({
   const offset = circumference * (1 - percentage / 100);
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-white to-primary/5 h-full flex flex-col relative">
+    <Card className="p-6 bg-gradient-to-br from-card to-primary/5 h-full flex flex-col relative">
       {/* Header con data */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export const CalorieCard: React.FC<CalorieCardProps> = ({
               cx={size / 2}
               cy={size / 2}
               r={radius}
-              stroke="#f1f5f9"
+              stroke="hsl(var(--muted))"
               strokeWidth={stroke}
               fill="transparent"
             />
@@ -99,23 +99,23 @@ export const CalorieCard: React.FC<CalorieCardProps> = ({
 
       {/* Stats compatte sotto */}
       <div className="grid grid-cols-2 gap-3 mt-6 pt-4 border-t">
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50">
-          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-            <TrendingDown className="w-4 h-4 text-green-600" />
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10 dark:bg-green-500/20">
+          <div className="w-8 h-8 rounded-full bg-green-500/20 dark:bg-green-500/30 flex items-center justify-center">
+            <TrendingDown className="w-4 h-4 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <div className="text-lg font-bold text-green-700">{remaining > 0 ? remaining : 0}</div>
-            <div className="text-xs text-green-600">Rimaste</div>
+            <div className="text-lg font-bold text-green-700 dark:text-green-400">{remaining > 0 ? remaining : 0}</div>
+            <div className="text-xs text-green-600 dark:text-green-500">Rimaste</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-50">
-          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-            <Target className="w-4 h-4 text-blue-600" />
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-500/10 dark:bg-blue-500/20">
+          <div className="w-8 h-8 rounded-full bg-blue-500/20 dark:bg-blue-500/30 flex items-center justify-center">
+            <Target className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <div className="text-lg font-bold text-blue-700">{goal}</div>
-            <div className="text-xs text-blue-600">Obiettivo</div>
+            <div className="text-lg font-bold text-blue-700 dark:text-blue-400">{goal}</div>
+            <div className="text-xs text-blue-600 dark:text-blue-500">Obiettivo</div>
           </div>
         </div>
       </div>

@@ -1,22 +1,22 @@
 // Configurazioni macro per goal (g per kg di peso corporeo)
 const GOAL_PROTEIN_RULES = {
-  lose_1kg_week: { defaultGkg: 2.1 },
+  lose_1kg_week: { defaultGkg: 2.0 },
   maintain: { defaultGkg: 1.6 },
-  gain_1kg_week: { defaultGkg: 1.7 },
+  gain_1kg_week: { defaultGkg: 1.8 },
 };
 
 const GOAL_FAT_RULES = {
-  lose_1kg_week: { defaultGkg: 0.7 },
-  maintain: { defaultGkg: 0.9 },
-  gain_1kg_week: { defaultGkg: 1.0 },
+  lose_1kg_week: { defaultGkg: 0.8 },
+  maintain: { defaultGkg: 1.0 },
+  gain_1kg_week: { defaultGkg: 1.1 },
 };
 
 const ACTIVITY_CARB_FLOORS = {
-  sedentary: { defaultMinGkg: 2.0 },
-  light: { defaultMinGkg: 2.5 },
-  moderate: { defaultMinGkg: 3.0 },
-  active: { defaultMinGkg: 3.5 },
-  very_active: { defaultMinGkg: 4.0 },
+  sedentary: { defaultMinGkg: 1.5 },
+  light: { defaultMinGkg: 2.0 },
+  moderate: { defaultMinGkg: 2.5 },
+  active: { defaultMinGkg: 3.0 },
+  very_active: { defaultMinGkg: 3.5 },
 };
 
 const macroCalculator = (weight, calories, goal, activityLevel) => {
@@ -37,7 +37,7 @@ const macroCalculator = (weight, calories, goal, activityLevel) => {
     const new_kcal_fat = kcal_fat - deficit_kcal;
     const new_fats = new_kcal_fat / 9;
 
-    const minFatsAbsolute = weight * 0.6;
+    const minFatsAbsolute = weight * 0.5;
 
     if (new_fats < minFatsAbsolute) {
       throw new Error(
