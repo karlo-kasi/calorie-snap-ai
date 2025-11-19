@@ -12,7 +12,7 @@ import { Profile } from "./pages/Profile";
 import { Login } from "./pages/Login";
 import { MainLayout } from "./Layout/MainLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import { OnboardingGuard } from "./components/OnboardingGuard";
+import { OnboardingGuard } from "./components/OnboardingModal/OnboardingGuard";
 import { AuthProvider } from "./contexts/AuthContext";
 import NotFound from "./pages/NotFound";
 

@@ -1,7 +1,7 @@
 //Components
 import { MacroNutrientsCard } from "../components/MacroNutrientsCard/MacroNutrientsCard";
 import { CalorieCard } from "../components/CalorieCard/CalorieCard";
-import { OnboardingModal } from "../components/OnboardingModal";
+import { OnboardingModal } from "../components/OnboardingModal/OnboardingModal";
 import { FoodCard } from "../components/FoodCard/FoodCard";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";

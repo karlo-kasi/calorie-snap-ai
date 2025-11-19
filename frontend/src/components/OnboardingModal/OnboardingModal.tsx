@@ -5,20 +5,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import { useAuth } from "../contexts/AuthContext";
-import { useToast } from "../hooks/use-toast";
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { useAuth } from "../../contexts/AuthContext";
+import { useToast } from "../../hooks/use-toast";
 import {
   ArrowRight,
   ArrowLeft,
@@ -26,7 +19,7 @@ import {
   Activity,
   Target,
 } from "lucide-react";
-import { Progress } from "./ui/progress";
+import { Progress } from "../ui/progress";
 
 interface OnboardingModalProps {
   open: boolean;
