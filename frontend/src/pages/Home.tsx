@@ -182,6 +182,7 @@ export const Home = () => {
                             minute: "2-digit",
                           }
                         )}
+                        image={meal.imageBase64 ? `data:image/jpeg;base64,${meal.imageBase64}` : undefined}
                       />
                     ))
                 ) : (

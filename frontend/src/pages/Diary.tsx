@@ -388,6 +388,7 @@ export const Diary = () => {
                       calories={meal.totalCalories}
                       quantity={`${meal.totalWeight}g`}
                       time={format(new Date(meal.date), "HH:mm")}
+                      image={meal.imageBase64 ? `data:image/jpeg;base64,${meal.imageBase64}` : undefined}
                       onEdit={(id) => handleViewMeal(id)}
                       onDelete={(id) => setMealToDelete(id)}
                     />

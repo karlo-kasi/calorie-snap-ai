@@ -6,7 +6,16 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Camera, Search, Upload, Plus, Loader2} from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
-import { analyzeImageFile } from '../services/api/meal.service';
+import { createMeal } from '../services/api/meal.service';
+import { useAuth } from '../contexts/AuthContext';
+import type { MealType, Ingredient } from '../types/meal.types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 
 export const AddFood = () => {
   const [foodName, setFoodName] = useState('');
@@ -14,8 +23,10 @@ export const AddFood = () => {
   const [calories, setCalories] = useState('');
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [mealType, setMealType] = useState<MealType>('lunch');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { token } = useAuth();
 
   const handleManualAdd = () => {
     if (!foodName || !quantity || !calories) {
@@ -39,41 +50,59 @@ export const AddFood = () => {
   };
 
 
-  // Invia foto al backend
+  // Invia foto al backend e crea il pasto
   const sendPhotoToBackend = async (file: File) => {
     setIsAnalyzing(true);
 
     try {
-      // Analizza l'immagine
-      const data = await analyzeImageFile(file);
-
-      // ✅ CORREZIONE: Usa la struttura corretta
-      if (data.success && data.data) {
-        const analysis = data.data;
-        
+      // Verifica autenticazione
+      if (!token) {
         toast({
-          title: "Analisi completata! 🎉",
-          description: `Rilevato: ${analysis.dishName}`,
+          title: "Autenticazione richiesta",
+          description: "Effettua il login per continuare",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Crea il pasto con analisi AI
+      const result = await createMeal(file, token, {
+        mealType,
+        imageBase64: '', // Verrà popolato da createMeal
+        mediaType: ''    // Verrà popolato da createMeal
+      });
+
+      if (result.success && result.data) {
+        const meal = result.data;
+
+        toast({
+          title: "Pasto creato! 🎉",
+          description: `${meal.dishName} aggiunto al diario`,
         });
 
-        // Popola i campi
-        setFoodName(analysis.dishName);
-        setCalories(analysis.calories.toString());
-        setQuantity(analysis.portionSize);
-        
-        // Log dettagli
-        console.log('🍝 Piatto:', analysis.dishName);
-        console.log('📊 Calorie:', analysis.calories);
-        console.log('🥗 Ingredienti:', analysis.ingredients.join(', '));
-        console.log('💪 Proteine:', analysis.macronutrients.proteins + 'g');
-        console.log('🍞 Carboidrati:', analysis.macronutrients.carbohydrates + 'g');
-        console.log('🥑 Grassi:', analysis.macronutrients.fats + 'g');
+        // Log dettagli completi
+        console.log('✅ Pasto creato con successo:');
+        console.log('🍝 Piatto:', meal.dishName);
+        console.log('⚖️ Peso totale:', meal.totalWeight + 'g');
+        console.log('📊 Calorie totali:', meal.totalCalories);
+        console.log('🥗 Ingredienti:');
+        meal.ingredients.forEach((ing: Ingredient) => {
+          console.log(`  - ${ing.name}: ${ing.quantity}g (${ing.calories}kcal)`);
+        });
+        console.log('💪 Macronutrienti totali:');
+        console.log('  - Proteine:', meal.totalMacros.proteins + 'g');
+        console.log('  - Carboidrati:', meal.totalMacros.carbohydrates + 'g');
+        console.log('  - Grassi:', meal.totalMacros.fats + 'g');
+        console.log('🎯 Confidenza:', meal.confidence);
+
+        // Opzionale: redirect al diario o refresh della lista
+        // navigate('/diary');
       }
 
     } catch (error) {
       console.error('❌ Errore:', error);
       toast({
-        title: "Errore nell'analisi",
+        title: "Errore nella creazione del pasto",
         description: error instanceof Error ? error.message : 'Riprova più tardi',
         variant: "destructive"
       });
@@ -185,6 +214,22 @@ export const AddFood = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Scatta una foto del tuo piatto e l'AI riconoscerà automaticamente il cibo e calcolerà le calorie.
                 </p>
+              </div>
+
+              {/* Selettore tipo pasto */}
+              <div className="space-y-2">
+                <Label htmlFor="mealType">Tipo di pasto</Label>
+                <Select value={mealType} onValueChange={(value) => setMealType(value as MealType)}>
+                  <SelectTrigger id="mealType">
+                    <SelectValue placeholder="Seleziona il tipo di pasto" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="breakfast">🌅 Colazione</SelectItem>
+                    <SelectItem value="lunch">☀️ Pranzo</SelectItem>
+                    <SelectItem value="dinner">🌙 Cena</SelectItem>
+                    <SelectItem value="snack">🍪 Spuntino</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               {/* Input nascosto per file */}

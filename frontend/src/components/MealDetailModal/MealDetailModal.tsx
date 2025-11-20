@@ -45,11 +45,11 @@ export const MealDetailModal = ({ meal, open, onClose }: MealDetailModalProps) =
 
         {/* Immagine se disponibile */}
         {meal.imageBase64 && (
-          <div className="rounded-lg overflow-hidden">
+          <div className="rounded-lg overflow-hidden shadow-lg border border-border">
             <img
               src={`data:image/jpeg;base64,${meal.imageBase64}`}
               alt={meal.dishName}
-              className="w-full h-48 object-cover"
+              className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
             />
           </div>
         )}
