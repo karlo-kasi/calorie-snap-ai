@@ -31,7 +31,7 @@ export const FoodCard = ({
   onDelete
 }: FoodCardProps) => {
   return (
-    <Card className="p-4 floating-card hover:shadow-lg transition-shadow">
+    <Card className="p-4 floating-card transition-shadow">
       <div className="flex items-center space-x-3">
         {/* Immagine del pasto o placeholder */}
         <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0 shadow-sm">

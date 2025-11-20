@@ -22,6 +22,7 @@ import {
 import { it } from "date-fns/locale";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import * as mealService from "../services/api/meal.service";
 import type { Meal, MealType, DailyStats } from "../types/meal.types";
 import {
@@ -36,6 +37,7 @@ import {
 } from "../components/ui/alert-dialog";
 
 export const Diary = () => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [mealToDelete, setMealToDelete] = useState<string | null>(null);
@@ -204,6 +206,11 @@ export const Diary = () => {
     }
   };
 
+  // Handler per navigare alla pagina Add
+  const handleAddMeal = () => {
+    navigate('/add');
+  };
+
   // Handler per eliminare pasto
   const handleDeleteMeal = async () => {
     if (!mealToDelete || !token) return;
@@ -307,6 +314,7 @@ export const Diary = () => {
             size="sm"
             onClick={handleRefresh}
             disabled={isMealsLoading}
+            className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <RefreshCw
               className={`h-4 w-4 ${isMealsLoading ? "animate-spin" : ""}`}
@@ -323,6 +331,7 @@ export const Diary = () => {
             size="sm"
             onClick={handlePreviousDay}
             disabled={isMealsLoading}
+            className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
@@ -341,6 +350,7 @@ export const Diary = () => {
             size="sm"
             onClick={handleNextDay}
             disabled={isNextDayDisabled || isMealsLoading}
+            className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <ChevronRight className="h-4 w-4" />
           </Button>
@@ -350,21 +360,19 @@ export const Diary = () => {
       {/* Daily Summary */}
       <Card className="p-4 gradient-primary text-primary-foreground">
         <div className="flex justify-between items-center">
-          <div>
-            <div className="text-lg font-semibold">
-              {Math.round(totalCalories)} kcal
-            </div>
-            <div className="text-sm opacity-90">
-              {isToday(selectedDate) ? "Consumate oggi" : "Consumate"}
-            </div>
+          <div className="text-center">
+            <div className="text-lg font-semibold">{Math.round(targetCalories)} kcal</div>
+            <div className="text-sm opacity-90">Target</div>
           </div>
-          <div className="text-right">
-            <div
-              className={`text-lg font-semibold ${
-                remainingCalories < 0 ? "text-warning" : ""
-              }`}
-            >
-              {Math.round(Math.abs(remainingCalories))} kcal
+          <div className="text-2xl font-bold">−</div>
+          <div className="text-center">
+            <div className="text-lg font-semibold">{Math.round(totalCalories)} kcal</div>
+            <div className="text-sm opacity-90">Consumate</div>
+          </div>
+          <div className="text-2xl font-bold">=</div>
+          <div className="text-center">
+            <div className={`text-lg font-semibold ${remainingCalories < 0 ? "text-warning" : ""}`}>
+              {Math.round(remainingCalories)} kcal
             </div>
             <div className="text-sm opacity-90">
               {remainingCalories >= 0 ? "Rimaste" : "In eccesso"}
@@ -404,7 +412,7 @@ export const Diary = () => {
                   </span>
                 )}
               </h2>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={handleAddMeal} className="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
                 + Aggiungi
               </Button>
             </div>
@@ -415,7 +423,7 @@ export const Diary = () => {
                   <div
                     key={meal._id}
                     onClick={() => handleViewMeal(meal._id)}
-                    className="cursor-pointer"
+                    className="cursor-pointer transition-all hover:bg-muted/50 rounded-lg"
                   >
                     <FoodCard
                       id={meal._id}
@@ -434,7 +442,7 @@ export const Diary = () => {
                   <p className="text-sm text-muted-foreground">
                     Nessun cibo aggiunto per {section.title.toLowerCase()}
                   </p>
-                  <Button variant="ghost" size="sm" className="mt-2">
+                  <Button variant="ghost" size="sm" className="mt-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" onClick={handleAddMeal}>
                     + Aggiungi cibo
                   </Button>
                 </Card>
@@ -458,7 +466,7 @@ export const Diary = () => {
               ? "Inizia a tracciare i tuoi pasti per monitorare le calorie"
               : "Non ci sono pasti registrati per questo giorno"}
           </p>
-          {isToday(selectedDate) && <Button>+ Aggiungi primo pasto</Button>}
+          {isToday(selectedDate) && <Button onClick={handleAddMeal}>+ Aggiungi primo pasto</Button>}
         </Card>
       )}
 

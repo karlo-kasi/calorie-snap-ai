@@ -3,7 +3,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Apple, Mail, Lock, User, ArrowRight, Sparkles } from 'lucide-react';
+import { Apple, Mail, Lock, User, ArrowRight, Sparkles, Utensils } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../hooks/use-toast';
@@ -79,31 +79,36 @@ export const Login = () => {
 
         {/* Content over image */}
         <div className="relative z-10 flex flex-col items-center justify-center w-full px-12 text-white">
-          <div className="flex items-center justify-center w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-sm mb-8 shadow-2xl">
+          {/* Logo AI-powered style Gemini */}
+          <div className="relative flex items-center justify-center w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-sm mb-8 shadow-2xl">
             <Apple className="w-12 h-12 text-white" />
+            {/* Stellina animata stile AI */}
+            <div className="absolute -top-2 -right-2">
+              <Sparkles className="w-6 h-6 text-white animate-pulse" />
+            </div>
           </div>
           <h1 className="text-5xl font-bold mb-4 text-center">
             CalorieSnap AI
           </h1>
           <p className="text-xl text-white/90 text-center max-w-md">
-            Il tuo assistente personale per una vita sana
+            Analisi nutrizionale intelligente con AI
           </p>
 
-          {/* Decorative elements */}
+          {/* Features cards */}
           <div className="mt-16 flex gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold">10k+</div>
-              <div className="text-sm text-white/80">Utenti attivi</div>
+            <div className="text-center bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[140px]">
+              <Sparkles className="w-8 h-8 text-white mx-auto mb-2" />
+              <div className="text-sm text-white/90">Analisi foto</div>
             </div>
             <div className="w-px bg-white/30" />
-            <div className="text-center">
-              <div className="text-4xl font-bold">500k+</div>
-              <div className="text-sm text-white/80">Pasti analizzati</div>
+            <div className="text-center bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[140px]">
+              <Sparkles className="w-8 h-8 text-white mx-auto mb-2" />
+              <div className="text-sm text-white/90">AI powered</div>
             </div>
             <div className="w-px bg-white/30" />
-            <div className="text-center">
-              <div className="text-4xl font-bold">4.9</div>
-              <div className="text-sm text-white/80">Rating medio</div>
+            <div className="text-center bg-white/10 backdrop-blur-sm rounded-lg p-4 min-w-[140px]">
+              <Sparkles className="w-8 h-8 text-white mx-auto mb-2" />
+              <div className="text-sm text-white/90">Tracciamento</div>
             </div>
           </div>
         </div>
@@ -114,14 +119,18 @@ export const Login = () => {
         <div className="w-full max-w-md border-2 rounded-2xl p-6 shadow-xl bg-card">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-6">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary/80 mb-3 shadow-lg">
+            <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary/80 mb-3 shadow-lg">
               <Apple className="w-7 h-7 text-white" />
+              {/* Stellina animata stile AI */}
+              <div className="absolute -top-1 -right-1">
+                <Sparkles className="w-4 h-4 text-white animate-pulse" />
+              </div>
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               CalorieSnap AI
             </h1>
             <p className="text-muted-foreground text-xs mt-1">
-              Il tuo assistente personale per una vita sana
+              Analisi nutrizionale intelligente con AI
             </p>
           </div>
 
