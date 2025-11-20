@@ -1,6 +1,6 @@
 import Meal from "../models/Meal.js";
 import User from "../models/User.js";
-import { analyzeFoodImage } from "../services/claudeService.js";
+import { analyzeFoodImage } from "../services/aiService.js";
 
 /**
  * Controller per caricare un'immagine e analizzarla con Claude AI
@@ -170,12 +170,12 @@ export const getTodayMeals = async (req, res, next) => {
     endOfDay.setHours(23, 59, 59, 999);
 
     // Query pasti di oggi
+    // NOTA: Include imageBase64 per visualizzare le foto nelle card
     const todayMeals = await Meal.find({
       userId,
       date: { $gte: startOfDay, $lte: endOfDay },
     })
-      .sort({ date: 1, mealType: 1 }) // Ordina per orario e tipo pasto
-      .select("-imageBase64");
+      .sort({ date: 1, mealType: 1 }); // Ordina per orario e tipo pasto
 
     // Calcola statistiche giornaliere
     const stats = todayMeals.reduce(
@@ -263,12 +263,12 @@ export const getMealsByDate = async (req, res, next) => {
     });
 
     // Query pasti per la data specificata
+    // NOTA: Include imageBase64 per visualizzare le foto nelle card
     const meals = await Meal.find({
       userId,
       date: { $gte: startOfDay, $lte: endOfDay },
     })
-      .sort({ date: 1, mealType: 1 })
-      .select("-imageBase64");
+      .sort({ date: 1, mealType: 1 });
 
     // Calcola statistiche giornaliere
     const stats = meals.reduce(

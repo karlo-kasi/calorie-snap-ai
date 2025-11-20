@@ -15,6 +15,7 @@ import {
   addDays,
   subDays,
   isToday,
+  isYesterday,
   isAfter,
   startOfDay,
 } from "date-fns";
@@ -39,6 +40,40 @@ export const Diary = () => {
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [mealToDelete, setMealToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Abbreviazioni mesi italiani
+  const monthAbbreviations: Record<string, string> = {
+    'gennaio': 'gen',
+    'febbraio': 'feb',
+    'marzo': 'mar',
+    'aprile': 'apr',
+    'maggio': 'mag',
+    'giugno': 'giu',
+    'luglio': 'lug',
+    'agosto': 'ago',
+    'settembre': 'set',
+    'ottobre': 'ott',
+    'novembre': 'nov',
+    'dicembre': 'dic'
+  };
+
+  // Funzione per formattare la data con "Oggi", "Ieri" o data abbreviata
+  const formatDateLabel = (date: Date): string => {
+    if (isToday(date)) {
+      return 'Oggi';
+    }
+    if (isYesterday(date)) {
+      return 'Ieri';
+    }
+
+    // Formatta la data normale con abbreviazione del mese
+    const dayName = format(date, "EEEE", { locale: it });
+    const day = format(date, "d");
+    const monthFull = format(date, "MMMM", { locale: it }).toLowerCase();
+    const monthAbbr = monthAbbreviations[monthFull] || monthFull.substring(0, 3);
+
+    return `${dayName} ${day} ${monthAbbr}`;
+  };
 
   // State per i pasti della data selezionata
   const [dateMeals, setDateMeals] = useState<Meal[]>([]);
@@ -294,7 +329,7 @@ export const Diary = () => {
 
           <div className="text-center">
             <div className="font-semibold">
-              {format(selectedDate, "EEEE d MMMM", { locale: it })}
+              {formatDateLabel(selectedDate)}
             </div>
             <div className="text-sm text-muted-foreground">
               {Math.round(totalCalories)} kcal totali
