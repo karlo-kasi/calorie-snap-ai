@@ -4,7 +4,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { Camera, Upload, Loader2, Plus, UtensilsCrossed } from 'lucide-react';
+import { Camera, Upload, Plus, UtensilsCrossed } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { createMeal } from '../services/api/meal.service';
 import { useAuth } from '../contexts/AuthContext';
@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
+import { ImageScanner } from '../components/ImageScanner';
 
 // Utility per indovinare il pasto in base all'orario
 const getTimeBasedMealType = (): MealType => {
@@ -38,10 +39,11 @@ export const AddFood = () => {
 
   // Foto
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { toast } = useToast();
-  const { token } = useAuth();
+  const { token, refreshMeals } = useAuth();
 
   // Aggiorna il tipo di pasto se l'utente apre l'app in orari diversi
   useEffect(() => {
@@ -69,6 +71,13 @@ export const AddFood = () => {
       return;
     }
 
+    // Crea preview dell'immagine
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
     setIsAnalyzing(true);
 
     try {
@@ -85,6 +94,8 @@ export const AddFood = () => {
           title: "Analisi completata",
           description: `${result.data.dishName} - ${result.data.totalCalories} kcal`,
         });
+        // Ricarica i pasti
+        await refreshMeals();
       }
     } catch (error) {
       toast({
@@ -94,6 +105,7 @@ export const AddFood = () => {
       });
     } finally {
       setIsAnalyzing(false);
+      setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
@@ -149,21 +161,22 @@ export const AddFood = () => {
             <CardContent className="space-y-4">
 
               {/* Upload Area */}
-              <div
-                onClick={!isAnalyzing ? triggerCamera : undefined}
-                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-                  isAnalyzing
-                    ? 'border-primary bg-primary/5'
-                    : 'border-muted-foreground/25 hover:border-primary'
-                }`}
-              >
-                {isAnalyzing ? (
-                  <div className="space-y-3">
-                    <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary" />
-                    <p className="font-medium">Analisi in corso...</p>
-                    <p className="text-sm text-muted-foreground">Riconoscimento ingredienti e calorie</p>
-                  </div>
-                ) : (
+              {isAnalyzing && imagePreview ? (
+                <ImageScanner
+                  imageUrl={imagePreview}
+                  onComplete={() => {
+                    // L'analisi è completata quando lo scanner finisce
+                  }}
+                />
+              ) : (
+                <div
+                  onClick={!isAnalyzing ? triggerCamera : undefined}
+                  className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                    isAnalyzing
+                      ? 'border-primary bg-primary/5'
+                      : 'border-muted-foreground/25 hover:border-primary'
+                  }`}
+                >
                   <div className="space-y-3">
                     <Camera className="h-12 w-12 mx-auto text-muted-foreground" />
                     <div>
@@ -173,8 +186,8 @@ export const AddFood = () => {
                       </p>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
               {/* Hidden Input */}
               <input

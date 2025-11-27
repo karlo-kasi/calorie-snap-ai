@@ -354,7 +354,7 @@ export const getMealById = async (req, res, next) => {
 
 export const deleteMealById = async (req, res, next) => {
   try {
-    const { mealId } = req.params;
+    const { id: mealId } = req.params;
     const userId = req.userId;
 
     // Trova il pasto

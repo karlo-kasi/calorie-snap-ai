@@ -1,5 +1,6 @@
 import { caloriesCalculator } from "../services/caloriesCalculator.js";
 import User from "../models/User.js";
+import Meal from "../models/Meal.js";
 import { formatUserData, mapGender } from "../utils/userFormatter.js";
 
 /**
@@ -166,7 +167,7 @@ export const editUserInformation = async (req, res) => {
 
 export const getDashboard = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Step 1: Recupera profilo utente
     const user = await User.findById(userId).select("profile goals");
@@ -264,7 +265,7 @@ export const getDashboard = async (req, res, next) => {
 // GET /stats/weekly
 export const getWeeklyStats = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Step 1: Recupera target calorico
     const user = await User.findById(userId).select("goals.targetCalories");
@@ -376,7 +377,7 @@ export const getWeeklyStats = async (req, res, next) => {
 // GET /stats/monthly
 export const getMonthlyStats = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.userId;
 
     // Step 1: Recupera target calorico
     const user = await User.findById(userId).select("goals.targetCalories");
