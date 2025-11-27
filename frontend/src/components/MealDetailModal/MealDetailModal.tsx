@@ -1,22 +1,15 @@
-import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from '../ui/dialog';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Button } from '../ui/button';
-import { Trash2, Loader2 } from 'lucide-react';
 import type { Meal } from '../../types/meal.types';
 import { format } from 'date-fns';
 import { it } from 'date-fns/locale';
-import { deleteMeal } from '../../services/api/meal.service';
-import { useAuth } from '../../contexts/AuthContext';
-import { useToast } from '../../hooks/use-toast';
 
 interface MealDetailModalProps {
   meal: Meal | null;
@@ -25,10 +18,6 @@ interface MealDetailModalProps {
 }
 
 export const MealDetailModal = ({ meal, open, onClose }: MealDetailModalProps) => {
-  const { token, refreshMeals } = useAuth();
-  const { toast } = useToast();
-  const [isDeleting, setIsDeleting] = useState(false);
-
   if (!meal) return null;
 
   const confidenceBadgeVariant = {
@@ -41,32 +30,6 @@ export const MealDetailModal = ({ meal, open, onClose }: MealDetailModalProps) =
     high: 'Alta',
     medium: 'Media',
     low: 'Bassa',
-  };
-
-  const handleDelete = async () => {
-    if (!token || !meal._id) return;
-
-    try {
-      setIsDeleting(true);
-      await deleteMeal(token, meal._id);
-
-      toast({
-        title: 'Pasto eliminato',
-        description: 'Il pasto è stato eliminato con successo',
-      });
-
-      // Ricarica i pasti e chiudi la modale
-      await refreshMeals();
-      onClose();
-    } catch (error) {
-      toast({
-        title: 'Errore',
-        description: 'Impossibile eliminare il pasto. Riprova.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsDeleting(false);
-    }
   };
 
   return (
@@ -183,28 +146,6 @@ export const MealDetailModal = ({ meal, open, onClose }: MealDetailModalProps) =
             {confidenceLabel[meal.confidence]}
           </Badge>
         </div>
-
-        {/* Footer con bottone elimina */}
-        <DialogFooter className="mt-4">
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="w-full sm:w-auto"
-          >
-            {isDeleting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Eliminazione...
-              </>
-            ) : (
-              <>
-                <Trash2 className="mr-2 h-4 w-4" />
-                Elimina pasto
-              </>
-            )}
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
