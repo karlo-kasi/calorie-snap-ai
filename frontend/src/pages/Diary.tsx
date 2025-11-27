@@ -170,25 +170,21 @@ export const Diary = () => {
     {
       key: "breakfast" as MealType,
       title: "Colazione",
-      icon: "🌅",
       meals: groupedMeals.breakfast,
     },
     {
       key: "lunch" as MealType,
       title: "Pranzo",
-      icon: "🍽️",
       meals: groupedMeals.lunch,
     },
     {
       key: "dinner" as MealType,
       title: "Cena",
-      icon: "🌙",
       meals: groupedMeals.dinner,
     },
     {
       key: "snack" as MealType,
       title: "Spuntini",
-      icon: "🍎",
       meals: groupedMeals.snack,
     },
   ];
@@ -404,7 +400,6 @@ export const Diary = () => {
           <div key={section.key} className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="font-semibold flex items-center gap-2">
-                <span>{section.icon}</span>
                 {section.title}
                 {sectionCalories > 0 && (
                   <span className="text-sm text-muted-foreground">
