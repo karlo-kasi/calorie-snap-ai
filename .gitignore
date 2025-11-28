@@ -52,3 +52,6 @@ mongodb_data/
 /DEBUG_MEALS.md
 /docker-validate.sh
 /DOCKER.md
+/DEPLOYMENT_CHECKLIST.md
+/DEPLOY.md
+/RAILWAY_QUICK_START.md

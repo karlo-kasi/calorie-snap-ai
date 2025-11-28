@@ -33,6 +33,15 @@ app.use("/api/onboarding", onboardingRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/meals", mealsRoutes);
 
+// Health check endpoint
+app.get("/health", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // 404 Handler
 app.use((req, res) => {
   res.status(404).json({
