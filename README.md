@@ -832,66 +832,6 @@ Vedi il file [LICENSE](LICENSE) per maggiori dettagli.
 
 ---
 
-## 🙏 Ringraziamenti
-
-Un ringraziamento speciale a:
-
-<table>
-<tr>
-<td align="center" width="25%">
-<a href="https://www.anthropic.com">
-<img src="https://www.anthropic.com/images/icons/safari-pinned-tab.svg" width="60" alt="Anthropic"/><br/>
-<b>Anthropic</b>
-</a><br/>
-Claude AI API
-</td>
-<td align="center" width="25%">
-<a href="https://openai.com">
-<img src="https://avatars.githubusercontent.com/u/14957082" width="60" alt="OpenAI"/><br/>
-<b>OpenAI</b>
-</a><br/>
-GPT-4 Vision API
-</td>
-<td align="center" width="25%">
-<a href="https://ui.shadcn.com">
-<img src="https://ui.shadcn.com/apple-touch-icon.png" width="60" alt="shadcn/ui"/><br/>
-<b>shadcn/ui</b>
-</a><br/>
-UI Components
-</td>
-<td align="center" width="25%">
-<a href="https://react.dev">
-<img src="https://reactjs.org/favicon.ico" width="60" alt="React"/><br/>
-<b>React</b>
-</a><br/>
-Frontend Framework
-</td>
-</tr>
-</table>
-
-E alla community open source per i fantastici strumenti e librerie! 💚
-
----
-
-## 📞 Supporto
-
-<div align="center">
-
-### Hai bisogno di aiuto?
-
-[![Issues](https://img.shields.io/badge/Issues-GitHub-red?style=for-the-badge&logo=github)](https://github.com/tuousername/calorie-snap-ai/issues)
-[![Discussions](https://img.shields.io/badge/Discussions-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/tuousername/calorie-snap-ai/discussions)
-[![Email](https://img.shields.io/badge/Email-Support-green?style=for-the-badge&logo=gmail)](mailto:support@example.com)
-
-</div>
-
-**Prima di aprire una issue:**
-1. ✅ Controlla la [documentazione](DOCKER.md)
-2. ✅ Cerca tra le [issues esistenti](https://github.com/tuousername/calorie-snap-ai/issues)
-3. ✅ Leggi la sezione [Troubleshooting](#-troubleshooting)
-
----
-
 <div align="center">
 
 ### ⭐ Se CalorieSnap AI ti è utile, lascia una stella!
@@ -902,7 +842,7 @@ E alla community open source per i fantastici strumenti e librerie! 💚
 
 ---
 
-**Made with ❤️, ☕ and 🤖 AI**
+**Made with ❤️, ☕**
 
 *CalorieSnap AI © 2024 - Tutti i diritti riservati*
 
