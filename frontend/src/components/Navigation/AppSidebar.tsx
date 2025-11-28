@@ -1,7 +1,7 @@
 //Components
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarSeparator } from "../../components/ui/sidebar";
 //Icons
-import { Home, BookOpen, BarChart3, Utensils, Settings, LogOut, UtensilsCrossed,} from "lucide-react";
+import { Home, BookOpen, BarChart3, Apple, Sparkles, Settings, LogOut, UtensilsCrossed,} from "lucide-react";
 //react-router
 import { Link, useLocation, useNavigate } from "react-router-dom";
 //Context
@@ -41,17 +41,20 @@ export function AppSidebar() {
           className="flex items-center gap-3 group/logo w-full min-h-[48px]"
         >
           {/* Logo con transizione - centrato quando collassata */}
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shrink-0 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group-data-[collapsible=icon]/sidebar-wrapper:mx-auto">
-            <Utensils className="w-6 h-6 text-white" />
+          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shrink-0 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 group-data-[collapsible=icon]/sidebar-wrapper:mx-auto">
+            <Apple className="w-6 h-6 text-white" />
+            <div className="absolute -top-1 -right-1">
+              <Sparkles className="w-3 h-3 text-white animate-pulse" />
+            </div>
           </div>
 
           {/* Testo con fade out - nascosto quando sidebar è collapsed */}
           <div className="flex flex-col overflow-hidden transition-all duration-300 group-data-[collapsible=icon]/sidebar-wrapper:w-0 group-data-[collapsible=icon]/sidebar-wrapper:opacity-0">
             <h2 className="text-xl font-bold text-foreground whitespace-nowrap">
-              CalorieTracker
+              CalorieSnap AI
             </h2>
             <p className="text-sm text-muted-foreground whitespace-nowrap">
-              Monitora la tua dieta
+              Traccia con intelligenza
             </p>
           </div>
         </Link>
