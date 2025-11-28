@@ -20,6 +20,7 @@ import {
 } from "recharts";
 import { useAuth } from "../contexts/AuthContext";
 import { getWeeklyStats, getMonthlyStats } from "../services/api/profile.service";
+import { getGoalLabel } from "../utils/goals";
 
 interface WeeklyData {
   day: string;
@@ -289,8 +290,8 @@ export const Stats = () => {
           {user?.profile?.goal && (
             <div className="flex items-center justify-between">
               <span className="text-sm">Obiettivo</span>
-              <span className="text-sm font-medium capitalize">
-                {user.profile.goal}
+              <span className="text-sm font-medium">
+                {getGoalLabel(user.profile.goal)}
               </span>
             </div>
           )}

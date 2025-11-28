@@ -5,14 +5,17 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { User, Settings, Target, Bell, HelpCircle, LogOut } from "lucide-react";
+import { User, Settings, Target, Bell, HelpCircle, LogOut, Loader2 } from "lucide-react";
 import { useToast } from "../hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
+import { editUserInformation } from "../services/api/profile.service";
+import { getGoalLabel } from "../utils/goals";
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { logout, user, token, refreshUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState({
     name: user?.name,
     age: user.profile?.age,
@@ -24,12 +27,46 @@ export const Profile = () => {
 
   const { toast } = useToast();
 
-  const handleSave = () => {
-    setIsEditing(false);
-    toast({
-      title: "Profilo aggiornato",
-      description: "Le tue informazioni sono state salvate con successo.",
-    });
+  const handleSave = async () => {
+    if (!token) {
+      toast({
+        title: "Errore",
+        description: "Non sei autenticato. Effettua il login.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      // Chiama l'API per salvare i dati del profilo
+      await editUserInformation(token, {
+        name: profile.name,
+        age: profile.age,
+        height: profile.height,
+        weight: profile.weight,
+        goal: profile.goal,
+      });
+
+      // Aggiorna i dati utente nel context
+      await refreshUser();
+
+      setIsEditing(false);
+      toast({
+        title: "Profilo aggiornato",
+        description: "Le tue informazioni sono state salvate con successo.",
+      });
+    } catch (error) {
+      console.error("Errore salvataggio profilo:", error);
+      toast({
+        title: "Errore",
+        description: "Impossibile salvare le modifiche. Riprova.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleLogout = () => {
@@ -93,8 +130,16 @@ export const Profile = () => {
             variant={isEditing ? "default" : "outline"}
             onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
             className="shrink-0"
+            disabled={isSaving}
           >
-            {isEditing ? "Salva" : "Modifica"}
+            {isSaving ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Salvataggio...
+              </>
+            ) : (
+              isEditing ? "Salva" : "Modifica"
+            )}
           </Button>
         </div>
 
@@ -178,7 +223,7 @@ export const Profile = () => {
           <h3 className="font-semibold mb-3 text-lg">🎯 Il tuo obiettivo</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Stai lavorando per:{" "}
-            <strong className="text-foreground">{profile.goal}</strong>
+            <strong className="text-foreground">{getGoalLabel(profile.goal)}</strong>
           </p>
           <Button size="sm" variant="outline">
             Cambia obiettivo

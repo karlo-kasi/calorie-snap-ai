@@ -17,16 +17,6 @@ export const Home = () => {
   const { user, token, meals, dailyStats, isAuthenticated, isLoading } =
     useAuth();
 
-  console.log("🏠 Home - Debug Info:");
-  console.log("  - User:", user);
-  console.log("  - Meals:", meals);
-  console.log("  - DailyStats:", dailyStats);
-  console.log("  - Token:", token);
-  //console.log("  - isAuthenticated:", isAuthenticated);
-  //console.log("  - isLoading:", isLoading);
-  //console.log("  - localStorage token:", localStorage.getItem("auth_token"));
-  //console.log("  - localStorage user:", localStorage.getItem("user"));
-
   // Mostra il modal se l'utente non ha completato l'onboarding
   const shouldShowOnboarding = user && !user.onboardingCompleted;
 
