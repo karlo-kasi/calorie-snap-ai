@@ -11,10 +11,24 @@ import onboardingRoutes from "./routes/onboardingRoutes.js";
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-// Abilita Cors
+// Abilita CORS con origini specifiche
+const allowedOrigins = process.env.CORS_ORIGINS 
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : ['http://localhost:5173']; // fallback per sviluppo
+
 app.use(
   cors({
-    origin: "*",
+    origin: (origin, callback) => {
+      // Permetti richieste senza origin (es: Postman, mobile apps)
+      if (!origin) return callback(null, true);
+      
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS policy: Origin ${origin} not allowed`));
+      }
+    },
+    credentials: true, // Permetti cookie/auth headers
   })
 );
 
