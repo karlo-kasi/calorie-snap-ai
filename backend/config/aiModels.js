@@ -11,10 +11,13 @@ const anthropicClient = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Inizializza client OpenAI (GPT-4 Vision)
-const openaiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Inizializza client OpenAI (GPT-4 Vision) solo se la chiave API è disponibile
+let openaiClient = null;
+if (process.env.OPENAI_API_KEY) {
+  openaiClient = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+}
 
 /**
  * Lista dei modelli AI disponibili in ordine di priorità
