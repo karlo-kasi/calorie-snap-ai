@@ -9,6 +9,7 @@ import { AddFood } from "./pages/AddFood";
 import { Diary } from "./pages/Diary";
 import { Stats } from "./pages/Stats";
 import { Profile } from "./pages/Profile";
+import { Settings } from "./pages/Settings";
 import { Login } from "./pages/Login";
 import { MainLayout } from "./Layout/MainLayout";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -96,6 +97,18 @@ const App = () => (
                     <OnboardingGuard>
                       <MainLayout>
                         <Profile />
+                      </MainLayout>
+                    </OnboardingGuard>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <OnboardingGuard>
+                      <MainLayout>
+                        <Settings />
                       </MainLayout>
                     </OnboardingGuard>
                   </ProtectedRoute>

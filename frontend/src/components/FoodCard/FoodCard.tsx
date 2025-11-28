@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { MoreHorizontal, Edit3, Trash2, UtensilsCrossed } from 'lucide-react';
@@ -65,17 +64,28 @@ export const FoodCard = ({
         {/* Menu azioni */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 flex-shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 flex-shrink-0"
+              onClick={(e) => e.stopPropagation()}
+            >
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => onEdit?.(id)}>
+            <DropdownMenuItem onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.(id);
+            }}>
               <Edit3 className="mr-2 h-4 w-4" />
               Modifica
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => onDelete?.(id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete?.(id);
+              }}
               className="text-destructive"
             >
               <Trash2 className="mr-2 h-4 w-4" />
