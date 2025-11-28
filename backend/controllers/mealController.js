@@ -198,6 +198,31 @@ export const getTodayMeals = async (req, res, next) => {
     const user = await User.findById(userId).select("goals.targetCalories");
     const remaining = user.goals.targetCalories - stats.totalCalories;
 
+    // Calcola giorni attivi (giorni con almeno un pasto)
+    const mongoose = require('mongoose');
+
+    console.log("🔍 DEBUG getTodayMeals - userId:", userId, "tipo:", typeof userId);
+
+    const activeDaysResult = await Meal.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$date" },
+            month: { $month: "$date" },
+            day: { $dayOfMonth: "$date" },
+          },
+        },
+      },
+      { $count: "totalDays" },
+    ]);
+
+    console.log("🔍 DEBUG getTodayMeals - activeDaysResult:", JSON.stringify(activeDaysResult));
+
+    const activeDays = activeDaysResult.length > 0 ? activeDaysResult[0].totalDays : 0;
+
+    console.log("📊 Giorni attivi calcolati:", activeDays);
+
     res.status(200).json({
       success: true,
       count: todayMeals.length,
@@ -212,6 +237,7 @@ export const getTodayMeals = async (req, res, next) => {
         // Aggiungi questi se vuoi includere target e rimanenti:
         target: user.goals.targetCalories,
         remaining: remaining,
+        activeDays: activeDays,
       },
     });
   } catch (error) {

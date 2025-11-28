@@ -44,6 +44,7 @@ export interface DailyStats {
   };
   target?: number;
   remaining?: number;
+  activeDays?: number;
 }
 
 export interface CreateMealRequest {

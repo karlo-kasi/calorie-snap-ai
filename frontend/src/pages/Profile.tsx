@@ -13,7 +13,7 @@ import { getGoalLabel } from "../utils/goals";
 
 export const Profile = () => {
   const navigate = useNavigate();
-  const { logout, user, token, refreshUser } = useAuth();
+  const { logout, user, token, refreshUser, dailyStats } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState({
@@ -242,7 +242,9 @@ export const Profile = () => {
           </Card>
           <div className="grid grid-cols-2 gap-4">
             <Card className="p-4 text-center">
-              <div className="text-xl font-bold text-energy">12</div>
+              <div className="text-xl font-bold text-energy">
+                {dailyStats?.activeDays || 0}
+              </div>
               <div className="text-xs text-muted-foreground mt-1">
                 Giorni attivi
               </div>

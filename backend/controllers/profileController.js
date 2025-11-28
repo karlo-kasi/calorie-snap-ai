@@ -229,7 +229,25 @@ export const getDashboard = async (req, res, next) => {
       status = "under";
     }
 
-    // Step 8: Risposta
+    // Step 8: Calcola giorni attivi (giorni con almeno un pasto)
+    const mongoose = require('mongoose');
+    const activeDaysResult = await Meal.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$date" },
+            month: { $month: "$date" },
+            day: { $dayOfMonth: "$date" },
+          },
+        },
+      },
+      { $count: "totalDays" },
+    ]);
+
+    const activeDays = activeDaysResult.length > 0 ? activeDaysResult[0].totalDays : 0;
+
+    // Step 9: Risposta
     res.status(200).json({
       success: true,
       data: {
@@ -238,6 +256,7 @@ export const getDashboard = async (req, res, next) => {
           currentWeight: user.profile.weight || null,
           goalWeight: user.goals.targetWeight || null,
           activityLevel: user.profile.activityLevel || null,
+          activeDays: activeDays,
         },
         today: {
           consumed: {
