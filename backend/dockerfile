@@ -6,8 +6,8 @@ WORKDIR /app
 # Copia solo i file package per sfruttare la cache
 COPY package*.json ./
 
-# Installa solo le dipendenze di produzione
-RUN npm ci --only=production --ignore-scripts
+# Installa solo le dipendenze di produzione (usa --omit=dev invece di --only=production)
+RUN npm ci --omit=dev --ignore-scripts
 
 # Stage 2: Production
 FROM node:20-alpine AS production
@@ -21,16 +21,24 @@ RUN addgroup -g 1001 -S nodejs && \
 # Copia dipendenze dalla stage precedente
 COPY --from=dependencies --chown=nodejs:nodejs /app/node_modules ./node_modules
 
-# Copia il codice sorgente
-COPY --chown=nodejs:nodejs . .
+# Copia il codice sorgente (PRIMA della riga COPY . .)
+COPY --chown=nodejs:nodejs package*.json ./
+COPY --chown=nodejs:nodejs server.js ./
+COPY --chown=nodejs:nodejs controllers ./controllers
+COPY --chown=nodejs:nodejs models ./models
+COPY --chown=nodejs:nodejs routes ./routes
+COPY --chown=nodejs:nodejs middleware ./middleware
+COPY --chown=nodejs:nodejs services ./services
+COPY --chown=nodejs:nodejs utils ./utils
+COPY --chown=nodejs:nodejs config ./config
 
 # Cambia utente
 USER nodejs
 
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=30s \
+# Health check semplificato
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"
 
 CMD ["node", "server.js"]
