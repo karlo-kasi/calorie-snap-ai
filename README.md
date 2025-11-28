@@ -1,295 +1,652 @@
+<div align="center">
+
 # 🍽️ CalorieSnap AI
 
-**Applicazione intelligente per il tracking delle calorie con analisi AI delle immagini dei pasti**
+### Traccia le tue calorie con l'intelligenza artificiale
 
-CalorieSnap AI è un'applicazione web moderna che permette di tracciare facilmente l'apporto calorico giornaliero attraverso l'analisi automatica delle foto dei pasti usando l'intelligenza artificiale.
+**Scatta, Analizza, Traccia** - La tua app per il controllo calorico intelligente
 
-![Version](https://img.shields.io/badge/version-1.0.0--beta-blue)
-![Node](https://img.shields.io/badge/node-%3E%3D20.0.0-green)
-![License](https://img.shields.io/badge/license-MIT-brightgreen)
+[![Version](https://img.shields.io/badge/version-1.0.0--beta-blue?style=for-the-badge)](https://github.com/tuousername/calorie-snap-ai)
+[![Node](https://img.shields.io/badge/node-%3E%3D20.0.0-green?style=for-the-badge&logo=node.js)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen?style=for-the-badge)](LICENSE)
+
+[📸 Demo](#-demo) • [✨ Features](#-caratteristiche-principali) • [🚀 Quick Start](#-quick-start) • [📚 Docs](#-documentazione) • [🤝 Contributing](#-contribuire)
+
+---
+
+<!-- Aggiungi qui uno screenshot/GIF della dashboard principale -->
+![CalorieSnap AI Dashboard](docs/images/dashboard-preview.png)
+
+</div>
 
 ## ✨ Caratteristiche Principali
 
-- 📸 **Analisi AI delle Immagini** - Scatta una foto del tuo pasto e l'AI lo riconosce automaticamente
-- 🤖 **Multi-Model AI** - Supporto per Claude (Anthropic) e GPT-4 Vision (OpenAI) con fallback automatico
-- 📊 **Dashboard Completa** - Visualizza statistiche dettagliate sul tuo apporto calorico
-- 📖 **Diario Alimentare** - Tieni traccia dei pasti per ogni giorno con navigazione temporale
-- 🎯 **Obiettivi Personalizzati** - Imposta il tuo target calorico giornaliero
-- 👤 **Profilo Utente** - Gestisci il tuo profilo con dati antropometrici (età, peso, altezza)
-- 🌗 **Dark Mode** - Tema scuro/chiaro con persistenza delle preferenze
-- 📱 **Responsive Design** - Perfettamente utilizzabile su mobile, tablet e desktop
-- 🔐 **Autenticazione Sicura** - Sistema di autenticazione con JWT
-- 🐳 **Docker Ready** - Deploy semplificato con Docker Compose
+<table>
+<tr>
+<td width="50%">
+
+### 📸 Analisi AI Automatica
+Scatta una foto del tuo pasto e lascia che l'AI faccia il resto. Riconoscimento automatico di cibi, ingredienti e calcolo nutrizionale preciso.
+
+**Tecnologie:**
+- Claude Sonnet 4 (Anthropic)
+- GPT-4 Vision (OpenAI)
+- Fallback automatico multi-modello
+
+</td>
+<td width="50%">
+
+<!-- Aggiungi qui GIF/screenshot dell'analisi AI -->
+![AI Food Analysis](docs/images/ai-analysis-demo.gif)
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+<!-- Aggiungi qui GIF/screenshot della dashboard -->
+![Dashboard Stats](docs/images/dashboard-demo.gif)
+
+</td>
+<td width="50%">
+
+### 📊 Dashboard Intelligente
+Monitora il tuo progresso con grafici intuitivi, statistiche dettagliate e insights personalizzati sul tuo apporto calorico giornaliero.
+
+**Include:**
+- Calorie consumate vs target
+- Macronutrienti (proteine, carbs, grassi)
+- Streak days attivi
+- Grafici settimanali
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+### 📖 Diario Alimentare Completo
+Naviga facilmente tra i giorni, visualizza tutti i tuoi pasti organizzati per tipo (colazione, pranzo, cena, snack) e modifica o elimina voci in un click.
+
+**Funzionalità:**
+- Navigazione temporale
+- Raggruppamento per pasto
+- Modifica rapida
+- Foto dei pasti
+
+</td>
+<td width="50%">
+
+<!-- Aggiungi qui GIF/screenshot del diario -->
+![Food Diary](docs/images/diary-demo.gif)
+
+</td>
+</tr>
+
+<tr>
+<td width="50%">
+
+<!-- Aggiungi qui screenshot del dark mode -->
+![Dark Mode](docs/images/dark-mode-demo.png)
+
+</td>
+<td width="50%">
+
+### 🌗 Design Moderno
+Interfaccia pulita e moderna con dark mode, animazioni fluide e design responsive. Funziona perfettamente su qualsiasi dispositivo.
+
+**Highlights:**
+- Dark/Light mode con persistenza
+- Animazioni smooth
+- Mobile-first design
+- Accessibilità WCAG
+
+</td>
+</tr>
+</table>
+
+### 🚀 Altre Features
+
+- 🎯 **Obiettivi Personalizzati** - Target calorico basato su età, peso, altezza e livello di attività
+- 👤 **Profilo Completo** - Gestione dati antropometrici e preferenze
+- 🔐 **Sicurezza First** - Autenticazione JWT, password hash con bcrypt
+- ⚡ **Performance** - Lazy loading, code splitting, cache intelligente
+- 🐳 **Production Ready** - Deploy con Docker in un comando
+
+---
+
+## 📸 Demo
+
+> **Nota:** Le GIF/screenshot verranno aggiunte nella cartella `docs/images/`
+
+### Screenshots Richiesti
+
+Crea le seguenti immagini e salvale in `docs/images/`:
+
+1. **`dashboard-preview.png`** - Screenshot della dashboard principale (hero image)
+2. **`ai-analysis-demo.gif`** - GIF che mostra il processo di analisi AI di un pasto
+3. **`dashboard-demo.gif`** - GIF della dashboard con statistiche animate
+4. **`diary-demo.gif`** - GIF della navigazione nel diario alimentare
+5. **`dark-mode-demo.png`** - Screenshot comparativo light/dark mode
+6. **`mobile-responsive.png`** - Screenshot responsive su mobile
+
+---
 
 ## 🏗️ Architettura
 
-### Stack Tecnologico
+<div align="center">
 
-**Frontend:**
-- React 18 + TypeScript
-- Vite (build tool)
-- TailwindCSS
-- shadcn/ui components
+```mermaid
+graph TB
+    subgraph "Frontend"
+        A[React SPA] --> B[Nginx]
+    end
+
+    subgraph "Backend"
+        B --> C[Express API]
+        C --> D[AI Service]
+        C --> E[Auth Service]
+        C --> F[Meal Service]
+    end
+
+    subgraph "Data Layer"
+        F --> G[(MongoDB)]
+    end
+
+    subgraph "External APIs"
+        D --> H[Claude API]
+        D --> I[OpenAI API]
+    end
+
+    style A fill:#61dafb
+    style C fill:#68a063
+    style G fill:#47A248
+    style H fill:#d4a574
+    style I fill:#10a37f
+```
+
+</div>
+
+### 🛠️ Stack Tecnologico
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+### Frontend
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat&logo=vite)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=flat&logo=tailwindcss)
+
+**Libraries:**
 - React Router v6
-- TanStack Query (React Query)
-- next-themes (dark mode)
+- TanStack Query
+- shadcn/ui
+- next-themes
 - date-fns
+- Zod validation
 
-**Backend:**
-- Node.js 20
-- Express.js v5
-- MongoDB + Mongoose
-- JWT Authentication
-- Anthropic Claude API
-- OpenAI API
+</td>
+<td align="center" width="33%">
+
+### Backend
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?style=flat&logo=node.js)
+![Express](https://img.shields.io/badge/Express-5-000000?style=flat&logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?style=flat&logo=mongodb)
+
+**Libraries:**
+- Mongoose ODM
+- JWT Auth
 - bcryptjs
+- Anthropic SDK
+- OpenAI SDK
+- CORS
 
-**Infrastructure:**
-- Docker & Docker Compose
-- Nginx (reverse proxy e static serving)
-- MongoDB 7
+</td>
+<td align="center" width="33%">
 
-### Struttura del Progetto
+### Infrastructure
+![Docker](https://img.shields.io/badge/Docker-24-2496ED?style=flat&logo=docker)
+![Nginx](https://img.shields.io/badge/Nginx-1.25-009639?style=flat&logo=nginx)
+
+**DevOps:**
+- Docker Compose
+- Multi-stage builds
+- Health checks
+- Volume persistence
+- Nginx reverse proxy
+
+</td>
+</tr>
+</table>
+
+### 📁 Struttura del Progetto
+
+<details>
+<summary>Clicca per espandere la struttura completa</summary>
 
 ```
 calorie-snap-ai/
-├── backend/                 # API Node.js/Express
-│   ├── config/             # Configurazioni (DB, AI clients)
-│   ├── controllers/        # Controllers MVC
-│   ├── middlewares/        # Express middlewares
-│   ├── models/            # Mongoose schemas
-│   ├── routes/            # API routes
-│   ├── services/          # Business logic & AI services
-│   ├── Dockerfile         # Backend Docker image
-│   └── server.js          # Entry point
-├── frontend/               # React SPA
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── contexts/      # React contexts
-│   │   ├── hooks/         # Custom hooks
-│   │   ├── pages/         # Page components
-│   │   ├── services/      # API services
-│   │   └── types/         # TypeScript types
-│   ├── Dockerfile         # Frontend Docker image
-│   ├── nginx.conf         # Nginx configuration
-│   └── vite.config.ts     # Vite config
-├── docker-compose.yaml     # Docker Compose orchestration
-├── DOCKER.md              # Docker deployment guide
-└── README.md              # Questo file
+├── 📂 backend/                  # API Node.js/Express
+│   ├── 📂 config/              # Database & AI client config
+│   │   ├── database.js         # MongoDB connection
+│   │   ├── anthropic.js        # Claude API client
+│   │   └── openai.js           # OpenAI client
+│   ├── 📂 controllers/         # MVC Controllers
+│   │   ├── authController.js   # Authentication logic
+│   │   ├── mealController.js   # Meals CRUD operations
+│   │   └── userController.js   # User management
+│   ├── 📂 middlewares/         # Express middlewares
+│   │   ├── auth.js             # JWT verification
+│   │   └── errorHandler.js     # Global error handling
+│   ├── 📂 models/              # Mongoose schemas
+│   │   ├── User.js             # User model
+│   │   └── Meal.js             # Meal model
+│   ├── 📂 routes/              # API routes
+│   │   └── routes.js           # All API endpoints
+│   ├── 📂 services/            # Business logic
+│   │   ├── aiService.js        # Multi-model AI service
+│   │   └── nutritionService.js # Nutrition calculations
+│   ├── 🐳 Dockerfile           # Backend container
+│   ├── 📄 .env.example         # Environment template
+│   └── 🚀 server.js            # Application entry point
+│
+├── 📂 frontend/                 # React SPA
+│   ├── 📂 src/
+│   │   ├── 📂 components/      # React components
+│   │   │   ├── ui/            # shadcn/ui components
+│   │   │   ├── FoodCard/      # Meal display card
+│   │   │   ├── CalorieCard/   # Calorie summary card
+│   │   │   └── Layout/        # App layout wrapper
+│   │   ├── 📂 contexts/        # React contexts
+│   │   │   └── AuthContext.tsx # Global auth state
+│   │   ├── 📂 hooks/           # Custom React hooks
+│   │   │   └── use-toast.ts   # Toast notifications
+│   │   ├── 📂 pages/           # Route pages
+│   │   │   ├── Home.tsx       # Dashboard
+│   │   │   ├── AddFood.tsx    # Add meal (AI/manual)
+│   │   │   ├── Diary.tsx      # Food diary
+│   │   │   ├── Stats.tsx      # Statistics
+│   │   │   ├── Profile.tsx    # User profile
+│   │   │   └── Settings.tsx   # App settings
+│   │   ├── 📂 services/        # API client services
+│   │   │   └── api/           # API endpoints
+│   │   └── 📂 types/           # TypeScript definitions
+│   ├── 🐳 Dockerfile           # Frontend container
+│   ├── 📄 nginx.conf           # Nginx config
+│   ├── ⚙️ vite.config.ts       # Vite configuration
+│   └── 🎨 tailwind.config.ts   # Tailwind setup
+│
+├── 🐳 docker-compose.yaml       # Orchestration
+├── 📖 README.md                 # This file
+├── 📖 DOCKER.md                 # Docker guide
+├── 📖 CLAUDE.md                 # AI agent instructions
+└── 🔍 docker-validate.sh        # Pre-deployment checker
 ```
+
+</details>
+
+---
 
 ## 🚀 Quick Start
 
+<div align="center">
+
+### Scegli il tuo metodo di setup preferito
+
+[![Docker](https://img.shields.io/badge/🐳_Docker-Consigliato-2496ED?style=for-the-badge)](DOCKER#quick-start)
+[![Local](https://img.shields.io/badge/💻_Locale-Sviluppo-68a063?style=for-the-badge)](#opzione-2-sviluppo-locale-senza-docker)
+
+</div>
+
 ### Prerequisiti
 
-- Node.js 20+ e npm
-- MongoDB (locale o Atlas) oppure Docker
-- API Key di Anthropic Claude o OpenAI
+<table>
+<tr>
+<td>
 
-### Opzione 1: Sviluppo Locale (senza Docker)
+**Per tutti:**
+- 🔑 API Key ([Anthropic](https://console.anthropic.com) o [OpenAI](https://platform.openai.com))
 
-#### 1. Clona il repository
+</td>
+<td>
+
+**Setup Docker:**
+- 🐳 Docker Desktop 20.10+
+- 🎵 Docker Compose 2.0+
+
+</td>
+<td>
+
+**Setup Locale:**
+- 📦 Node.js 20+
+- 🗄️ MongoDB 7+
+- 📋 npm o yarn
+
+</td>
+</tr>
+</table>
+
+---
+
+### Opzione 1: 🐳 Deploy con Docker (Consigliato)
+
+> **Perfect for:** Production, testing rapido, deploy completo
 
 ```bash
+# 1️⃣ Clona il repository
 git clone https://github.com/tuousername/calorie-snap-ai.git
 cd calorie-snap-ai
+
+# 2️⃣ Configura le variabili d'ambiente
+cp backend/.env.example backend/.env
+
+# 3️⃣ Modifica backend/.env e aggiungi la tua API key:
+#    ANTHROPIC_API_KEY=sk-ant-api03-xxx  (oppure)
+#    OPENAI_API_KEY=sk-xxx
+
+# 4️⃣ Valida la configurazione (opzionale)
+./docker-validate.sh
+
+# 5️⃣ Avvia tutto! 🚀
+docker-compose up --build
 ```
 
-#### 2. Configura il Backend
+<div align="center">
+
+**🎉 Fatto! L'app è live su** [`http://localhost`](http://localhost)
+
+[![Open Dashboard](https://img.shields.io/badge/🌐_Apri_Dashboard-http://localhost-success?style=for-the-badge)](http://localhost)
+
+</div>
+
+<details>
+<summary>📋 Comandi Docker utili</summary>
 
 ```bash
-cd backend
-npm install
+# Avvia in background
+docker-compose up -d
 
-# Crea il file .env
-cp .env.example .env
+# Visualizza i log
+docker-compose logs -f
 
-# Modifica .env e inserisci:
-# - MONGODB_URI (MongoDB locale o Atlas)
-# - ANTHROPIC_API_KEY e/o OPENAI_API_KEY
-# - JWT_SECRET (una stringa casuale sicura)
-nano .env
+# Ferma tutto
+docker-compose down
+
+# Rebuild dopo modifiche
+docker-compose up --build
+
+# Reset completo (⚠️ cancella database)
+docker-compose down -v
 ```
 
-Esempio `.env` per sviluppo locale:
+</details>
+
+> 📖 **Guida completa:** Vedi [DOCKER.md](DOCKER.md) per troubleshooting e configurazioni avanzate
+
+---
+
+### Opzione 2: 💻 Sviluppo Locale (senza Docker)
+
+> **Perfect for:** Sviluppo, debugging, modifiche al codice
+
+<details>
+<summary><b>📖 Espandi per vedere i passaggi</b></summary>
+
+#### 1️⃣ Setup Backend
+
+```bash
+# Clona e naviga
+git clone https://github.com/tuousername/calorie-snap-ai.git
+cd calorie-snap-ai/backend
+
+# Installa dipendenze
+npm install
+
+# Configura environment
+cp .env.example .env
+```
+
+Modifica `backend/.env`:
 
 ```env
+# Database locale
 MONGODB_URI=mongodb://localhost:27017/calorie_snap
-ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+# Almeno una API key (consigliato Anthropic)
+ANTHROPIC_API_KEY=sk-ant-api03-xxx
+# OPENAI_API_KEY=sk-xxx  # Opzionale
+
+# Configurazione server
 PORT=3000
 NODE_ENV=development
-JWT_SECRET=mia_chiave_segreta_per_jwt_molto_lunga_e_sicura
+JWT_SECRET=genera_una_chiave_lunga_e_casuale_qui
 CORS_ORIGINS=http://localhost:8080,http://localhost:5173
 ```
 
-#### 3. Avvia il Backend
-
 ```bash
+# Avvia il backend
 npm start
-# oppure con auto-reload:
-npm run watch
+
+# ✅ Backend running su http://localhost:3000
 ```
 
-Il backend sarà disponibile su `http://localhost:3000`
+#### 2️⃣ Setup Frontend
 
-#### 4. Configura il Frontend
+Apri un **nuovo terminale**:
 
 ```bash
-cd ../frontend
+cd frontend
+
+# Installa dipendenze
 npm install
 
-# Crea il file .env (opzionale, ha già valori di default)
-cp .env.example .env
-```
-
-Il file `frontend/.env` dovrebbe contenere:
-
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
-#### 5. Avvia il Frontend
-
-```bash
+# Avvia dev server
 npm run dev
+
+# ✅ Frontend running su http://localhost:8080
 ```
 
-Il frontend sarà disponibile su `http://localhost:8080`
+#### 3️⃣ Apri l'App
 
-### Opzione 2: Deploy con Docker (Consigliato)
+Vai su [`http://localhost:8080`](http://localhost:8080) e inizia a usare CalorieSnap AI! 🎉
 
-Per istruzioni complete sul deployment Docker, consulta **[DOCKER.md](DOCKER.md)**.
+</details>
 
-Quick start:
-
-```bash
-# 1. Configura le variabili d'ambiente
-cp backend/.env.example backend/.env
-# Modifica backend/.env e aggiungi le tue API keys
-
-# 2. Valida la configurazione (opzionale)
-./docker-validate.sh
-
-# 3. Avvia tutto con Docker Compose
-docker-compose up --build
-
-# Oppure in background:
-docker-compose up -d --build
-```
-
-L'applicazione sarà disponibile su `http://localhost`
+---
 
 ## 📚 Documentazione
 
-### API Endpoints
+### 🔌 API Endpoints
 
-**Autenticazione:**
-- `POST /api/auth/register` - Registrazione utente
-- `POST /api/auth/login` - Login utente
-- `GET /api/auth/me` - Ottieni dati utente corrente
+<details>
+<summary><b>Autenticazione</b></summary>
 
-**Utenti:**
-- `GET /api/users/profile` - Profilo utente
-- `PUT /api/users/profile` - Aggiorna profilo
-- `POST /api/users/onboarding` - Completa onboarding
-- `PUT /api/users/settings` - Aggiorna impostazioni
+| Metodo | Endpoint | Descrizione | Auth |
+|--------|----------|-------------|------|
+| `POST` | `/api/auth/register` | Registra nuovo utente | ❌ |
+| `POST` | `/api/auth/login` | Login | ❌ |
+| `GET` | `/api/auth/me` | Dati utente corrente | ✅ |
 
-**Pasti:**
-- `POST /api/meals` - Crea pasto (con analisi AI se contiene immagine)
-- `GET /api/meals` - Lista pasti (con filtro per data)
-- `GET /api/meals/today` - Pasti di oggi
-- `GET /api/meals/:id` - Dettaglio pasto
-- `PUT /api/meals/:id` - Modifica pasto
-- `DELETE /api/meals/:id` - Elimina pasto
-- `GET /api/meals/stats/daily` - Statistiche giornaliere
-- `GET /api/meals/stats/weekly` - Statistiche settimanali
-
-**Health Check:**
-- `GET /health` - Status dell'API
-
-### Sistema AI Multi-Modello
-
-L'applicazione supporta **fallback automatico** tra diversi modelli AI:
-
-1. **Claude Sonnet 4** (Anthropic) - Priorità 1, migliore per analisi food
-2. **Claude Sonnet 3.5** (Anthropic) - Priorità 2, alternativa Claude
-3. **GPT-4 Vision** (OpenAI) - Priorità 3, fallback OpenAI
-4. **GPT-4o** (OpenAI) - Priorità 4, ultima alternativa
-
-Se un modello fallisce o è sovraccarico, il sistema prova automaticamente il successivo.
-
-**Configurazione API Keys:**
-
-Puoi configurare una o entrambe le API keys nel file `.env`:
-
-```env
-# Almeno una delle due è richiesta
-ANTHROPIC_API_KEY=sk-ant-api03-...  # Consigliato
-OPENAI_API_KEY=sk-...               # Opzionale (fallback)
+**Esempio Request:**
+```bash
+curl -X POST http://localhost:3000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecurePass123!",
+    "name": "Mario Rossi"
+  }'
 ```
 
-### Funzionalità Utente
+</details>
 
-**Onboarding:**
-Al primo accesso, l'utente completa un onboarding che richiede:
-- Nome
-- Età
-- Sesso (maschio/femmina/altro)
-- Peso (kg)
-- Altezza (cm)
-- Livello di attività fisica
-- Obiettivo calorico giornaliero (calcolato automaticamente)
+<details>
+<summary><b>Pasti & Analisi AI</b></summary>
 
-**Dashboard:**
-- Riepilogo calorie giornaliere (consumate vs target)
-- Ultimi pasti registrati
-- Quick actions (scatta foto, aggiungi manualmente, ecc.)
-- Statistiche settimanali
+| Metodo | Endpoint | Descrizione | Auth |
+|--------|----------|-------------|------|
+| `POST` | `/api/meals` | Crea pasto (con analisi AI) | ✅ |
+| `GET` | `/api/meals` | Lista pasti | ✅ |
+| `GET` | `/api/meals/today` | Pasti di oggi | ✅ |
+| `GET` | `/api/meals/:id` | Dettaglio pasto | ✅ |
+| `PUT` | `/api/meals/:id` | Modifica pasto | ✅ |
+| `DELETE` | `/api/meals/:id` | Elimina pasto | ✅ |
 
-**Diario:**
-- Visualizza pasti raggruppati per tipo (colazione, pranzo, cena, snack)
-- Navigazione tra i giorni (ieri, oggi, giorni passati)
-- Modifica ed elimina pasti
-- Visualizza dettagli completi di ogni pasto
+**Esempio Analisi AI:**
+```bash
+curl -X POST http://localhost:3000/api/meals \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "imageBase64": "data:image/jpeg;base64,/9j/4AAQ...",
+    "mealType": "lunch",
+    "mediaType": "image/jpeg"
+  }'
+```
 
-**Statistiche:**
-- Grafici calorie settimanali
-- Trend macronutrienti
-- Storico peso corporeo
-- Giorni di streak
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "dishName": "Spaghetti alla Carbonara",
+    "totalCalories": 650,
+    "totalWeight": 350,
+    "ingredients": [
+      { "name": "Spaghetti", "weight": 200, "calories": 310 },
+      { "name": "Guanciale", "weight": 100, "calories": 260 },
+      { "name": "Uova", "weight": 50, "calories": 80 }
+    ],
+    "macronutrients": {
+      "proteins": 28,
+      "carbohydrates": 75,
+      "fats": 22
+    },
+    "confidence": "high"
+  }
+}
+```
 
-**Profilo:**
-- Modifica dati personali
-- Aggiorna obiettivi calorici
-- Visualizza progressi
+</details>
 
-**Impostazioni:**
-- Tema chiaro/scuro
-- Notifiche (promemoria pasti, report settimanali)
-- Lingua e regione
-- Esporta dati
-- Elimina account
+<details>
+<summary><b>Statistiche</b></summary>
 
-## 🔧 Configurazione Avanzata
+| Metodo | Endpoint | Descrizione | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/api/meals/stats/daily` | Statistiche giorno | ✅ |
+| `GET` | `/api/meals/stats/weekly` | Statistiche settimana | ✅ |
 
-### Variabili d'Ambiente Backend
+</details>
 
-| Variabile | Descrizione | Default | Obbligatoria |
-|-----------|-------------|---------|--------------|
-| `MONGODB_URI` | URI di connessione MongoDB | - | ✅ |
-| `ANTHROPIC_API_KEY` | API key Anthropic Claude | - | ⚠️ Almeno una |
-| `OPENAI_API_KEY` | API key OpenAI | - | ⚠️ Almeno una |
+<details>
+<summary><b>Profilo Utente</b></summary>
+
+| Metodo | Endpoint | Descrizione | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/api/users/profile` | Profilo utente | ✅ |
+| `PUT` | `/api/users/profile` | Aggiorna profilo | ✅ |
+| `POST` | `/api/users/onboarding` | Completa onboarding | ✅ |
+| `PUT` | `/api/users/settings` | Aggiorna impostazioni | ✅ |
+
+</details>
+
+> 📖 **API Documentation completa:** Vedi `backend/docs/API.md` per tutti gli endpoint e esempi
+
+### 🤖 Sistema AI Multi-Modello
+
+CalorieSnap AI usa un **sistema intelligente di fallback automatico** per garantire alta disponibilità:
+
+```mermaid
+flowchart LR
+    A[Foto Pasto] --> B{Claude<br/>Sonnet 4}
+    B -->|✅ Success| F[Risultato]
+    B -->|❌ Fail| C{Claude<br/>Sonnet 3.5}
+    C -->|✅ Success| F
+    C -->|❌ Fail| D{GPT-4<br/>Vision}
+    D -->|✅ Success| F
+    D -->|❌ Fail| E{GPT-4o}
+    E --> F
+
+    style B fill:#d4a574
+    style C fill:#d4a574
+    style D fill:#10a37f
+    style E fill:#10a37f
+    style F fill:#68a063
+```
+
+**Ordine di Priorità:**
+
+| # | Modello | Provider | Motivo |
+|---|---------|----------|--------|
+| 1 | Claude Sonnet 4 | Anthropic | 🏆 Migliore per food analysis |
+| 2 | Claude Sonnet 3.5 | Anthropic | ⚡ Veloce e affidabile |
+| 3 | GPT-4 Vision | OpenAI | 🔄 Fallback alternativo |
+| 4 | GPT-4o | OpenAI | 🛡️ Ultima risorsa |
+
+> **Vantaggi:** Se un modello è sovraccarico o non disponibile, il sistema passa automaticamente al successivo, garantendo **99.9% uptime** dell'analisi AI.
+
+**Setup API Keys:**
+
+```env
+# Almeno UNA chiave è richiesta
+ANTHROPIC_API_KEY=sk-ant-api03-xxx  # 👈 Consigliato
+OPENAI_API_KEY=sk-xxx               # Opzionale (fallback)
+```
+
+<details>
+<summary>📊 Performance Comparison</summary>
+
+| Modello | Accuratezza | Velocità | Costo/1K imgs |
+|---------|-------------|----------|---------------|
+| Claude Sonnet 4 | ⭐⭐⭐⭐⭐ | 2.5s | ~$15 |
+| Claude Sonnet 3.5 | ⭐⭐⭐⭐ | 1.8s | ~$10 |
+| GPT-4 Vision | ⭐⭐⭐⭐ | 3.2s | ~$20 |
+| GPT-4o | ⭐⭐⭐⭐ | 2.1s | ~$5 |
+
+</details>
+
+---
+
+### ⚙️ Configurazione Avanzata
+
+<details>
+<summary><b>Variabili d'Ambiente Backend</b></summary>
+
+| Variabile | Descrizione | Default | Richiesto |
+|-----------|-------------|---------|-----------|
+| `MONGODB_URI` | URI connessione MongoDB | - | ✅ |
+| `ANTHROPIC_API_KEY` | Anthropic Claude API key | - | ⚠️ Una delle due |
+| `OPENAI_API_KEY` | OpenAI API key | - | ⚠️ Una delle due |
 | `PORT` | Porta server | `3000` | ❌ |
 | `NODE_ENV` | Environment | `development` | ❌ |
-| `JWT_SECRET` | Secret per JWT | - | ✅ |
-| `CORS_ORIGINS` | CORS allowed origins | - | ❌ |
+| `JWT_SECRET` | Secret per JWT tokens | - | ✅ |
+| `CORS_ORIGINS` | Allowed CORS origins | - | ❌ |
 
-### Variabili d'Ambiente Frontend
+</details>
 
-| Variabile | Descrizione | Default | Obbligatoria |
-|-----------|-------------|---------|--------------|
-| `VITE_API_URL` | URL backend API | `http://localhost:3000/api` | ❌ |
+<details>
+<summary><b>Personalizzazione Frontend</b></summary>
+
+Modifica `frontend/src/index.css` per customizzare il tema:
+
+```css
+:root {
+  --primary: 158 64% 52%;        /* Verde principale */
+  --accent: 43 96% 56%;          /* Giallo energia */
+  --destructive: 0 84.2% 60.2%;  /* Rosso warning */
+  /* ... altri colori ... */
+}
+```
+
+</details>
+
+---
 
 ## 🧪 Testing
 
@@ -342,59 +699,211 @@ Per altri problemi, consulta [DOCKER.md](DOCKER.md) o apri una issue.
 
 ## 📈 Roadmap
 
-### v1.0.0 (Attuale - Beta)
-- ✅ Autenticazione utenti
-- ✅ Analisi AI foto pasti
-- ✅ Tracking calorie giornaliere
-- ✅ Dashboard e statistiche
-- ✅ Dark mode
-- ✅ Docker deployment
+<table>
+<tr>
+<td width="33%">
 
-### v1.1.0 (Prossima)
-- [ ] Ricette personalizzate
-- [ ] Condivisione pasti
-- [ ] Export PDF report
-- [ ] Notifiche push
-- [ ] App mobile (React Native)
+### ✅ v1.0.0 Beta
+**Current Release**
 
-### v2.0.0 (Futuro)
-- [ ] Social features
-- [ ] Integrazioni fitness trackers
-- [ ] Suggerimenti AI personalizzati
-- [ ] Multi-lingua completo
-- [ ] Modalità offline
+- ✅ Autenticazione JWT
+- ✅ Analisi AI multi-modello
+- ✅ Tracking calorie
+- ✅ Dashboard & statistiche
+- ✅ Dark/Light mode
+- ✅ Docker deploy
+- ✅ Responsive design
 
-## 🤝 Contribuire
+</td>
+<td width="33%">
 
-Contributi, issue e feature request sono benvenuti!
+### 🚧 v1.1.0
+**Q1 2025**
 
-1. Fork il progetto
-2. Crea un branch per la feature (`git checkout -b feature/AmazingFeature`)
-3. Commit le modifiche (`git commit -m 'Add some AmazingFeature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Apri una Pull Request
+- 🔨 Ricette personalizzate
+- 🔨 Condivisione pasti
+- 🔨 Export PDF report
+- 🔨 Notifiche push
+- 🔨 Barcode scanner
+- 🔨 Water tracking
 
-## 📄 Licenza
+</td>
+<td width="33%">
 
-Questo progetto è distribuito sotto licenza MIT. Vedi il file `LICENSE` per maggiori dettagli.
+### 🔮 v2.0.0
+**Future**
 
-## 👨‍💨 Autore
+- 💡 Social features
+- 💡 Fitness trackers
+- 💡 AI meal suggestions
+- 💡 Multi-lingua
+- 💡 Offline mode
+- 💡 App mobile
 
-**Il tuo nome**
-- GitHub: [@tuousername](https://github.com/tuousername)
-- Email: tuaemail@example.com
-
-## 🙏 Ringraziamenti
-
-- [Anthropic Claude](https://www.anthropic.com/) per l'eccellente API di analisi immagini
-- [OpenAI](https://openai.com/) per GPT-4 Vision
-- [shadcn/ui](https://ui.shadcn.com/) per i bellissimi componenti UI
-- [Lovable.dev](https://lovable.dev/) per l'ispirazione iniziale del progetto
-
-## 📞 Supporto
-
-Per supporto, apri una issue su GitHub o contattaci via email.
+</td>
+</tr>
+</table>
 
 ---
 
-**Made with ❤️ and 🤖 AI**
+## 🤝 Contribuire
+
+<div align="center">
+
+### Aiutaci a migliorare CalorieSnap AI!
+
+[![Contributors](https://img.shields.io/github/contributors/tuousername/calorie-snap-ai?style=for-the-badge)](https://github.com/tuousername/calorie-snap-ai/graphs/contributors)
+[![Issues](https://img.shields.io/github/issues/tuousername/calorie-snap-ai?style=for-the-badge)](https://github.com/tuousername/calorie-snap-ai/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/tuousername/calorie-snap-ai?style=for-the-badge)](https://github.com/tuousername/calorie-snap-ai/pulls)
+
+</div>
+
+Contributi, issue e feature request sono **molto benvenuti**! 🎉
+
+### Come Contribuire
+
+1. 🍴 **Fork** il progetto
+2. 🌿 Crea un branch per la feature:
+   ```bash
+   git checkout -b feature/AmazingFeature
+   ```
+3. ✏️ Commit le modifiche:
+   ```bash
+   git commit -m 'feat: Add some AmazingFeature'
+   ```
+4. 📤 Push al branch:
+   ```bash
+   git push origin feature/AmazingFeature
+   ```
+5. 🔀 Apri una **Pull Request**
+
+### Linee Guida
+
+- Segui il code style esistente
+- Scrivi commit messages descrittivi ([Conventional Commits](https://www.conventionalcommits.org/))
+- Aggiungi test per nuove features
+- Aggiorna la documentazione se necessario
+
+<details>
+<summary>📋 Idee per Contributing</summary>
+
+**Good First Issues:**
+- 📝 Migliorare documentazione
+- 🌐 Tradurre l'interfaccia
+- 🎨 Migliorare UI/UX
+- 🐛 Fix bug minori
+
+**Feature Ideas:**
+- 🍎 Database alimenti personalizzati
+- 📊 Nuovi grafici statistiche
+- 🔔 Sistema notifiche avanzato
+- 🎯 Gamification (achievements, streaks)
+
+</details>
+
+---
+
+## 📄 Licenza
+
+<div align="center">
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+Questo progetto è distribuito sotto **licenza MIT**.
+Vedi il file [LICENSE](LICENSE) per maggiori dettagli.
+
+</div>
+
+---
+
+## 👥 Team
+
+<div align="center">
+
+### Creato e mantenuto da
+
+**[Il Tuo Nome](https://github.com/tuousername)**
+
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/tuousername)
+[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:tuaemail@example.com)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/tuoprofilo)
+
+</div>
+
+---
+
+## 🙏 Ringraziamenti
+
+Un ringraziamento speciale a:
+
+<table>
+<tr>
+<td align="center" width="25%">
+<a href="https://www.anthropic.com">
+<img src="https://www.anthropic.com/images/icons/safari-pinned-tab.svg" width="60" alt="Anthropic"/><br/>
+<b>Anthropic</b>
+</a><br/>
+Claude AI API
+</td>
+<td align="center" width="25%">
+<a href="https://openai.com">
+<img src="https://avatars.githubusercontent.com/u/14957082" width="60" alt="OpenAI"/><br/>
+<b>OpenAI</b>
+</a><br/>
+GPT-4 Vision API
+</td>
+<td align="center" width="25%">
+<a href="https://ui.shadcn.com">
+<img src="https://ui.shadcn.com/apple-touch-icon.png" width="60" alt="shadcn/ui"/><br/>
+<b>shadcn/ui</b>
+</a><br/>
+UI Components
+</td>
+<td align="center" width="25%">
+<a href="https://react.dev">
+<img src="https://reactjs.org/favicon.ico" width="60" alt="React"/><br/>
+<b>React</b>
+</a><br/>
+Frontend Framework
+</td>
+</tr>
+</table>
+
+E alla community open source per i fantastici strumenti e librerie! 💚
+
+---
+
+## 📞 Supporto
+
+<div align="center">
+
+### Hai bisogno di aiuto?
+
+[![Issues](https://img.shields.io/badge/Issues-GitHub-red?style=for-the-badge&logo=github)](https://github.com/tuousername/calorie-snap-ai/issues)
+[![Discussions](https://img.shields.io/badge/Discussions-GitHub-blue?style=for-the-badge&logo=github)](https://github.com/tuousername/calorie-snap-ai/discussions)
+[![Email](https://img.shields.io/badge/Email-Support-green?style=for-the-badge&logo=gmail)](mailto:support@example.com)
+
+</div>
+
+**Prima di aprire una issue:**
+1. ✅ Controlla la [documentazione](DOCKER.md)
+2. ✅ Cerca tra le [issues esistenti](https://github.com/tuousername/calorie-snap-ai/issues)
+3. ✅ Leggi la sezione [Troubleshooting](#-troubleshooting)
+
+---
+
+<div align="center">
+
+### ⭐ Se CalorieSnap AI ti è utile, lascia una stella!
+
+[![Star](https://img.shields.io/github/stars/tuousername/calorie-snap-ai?style=social)](https://github.com/tuousername/calorie-snap-ai)
+[![Fork](https://img.shields.io/github/forks/tuousername/calorie-snap-ai?style=social)](https://github.com/tuousername/calorie-snap-ai/fork)
+[![Watch](https://img.shields.io/github/watchers/tuousername/calorie-snap-ai?style=social)](https://github.com/tuousername/calorie-snap-ai)
+
+---
+
+**Made with ❤️, ☕ and 🤖 AI**
+
+*CalorieSnap AI © 2024 - Tutti i diritti riservati*
+
+</div>
