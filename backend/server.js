@@ -11,41 +11,14 @@ import onboardingRoutes from "./routes/onboardingRoutes.js";
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-// Parse CORS origins da variabile d'ambiente
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  ...(process.env.CORS_ORIGINS 
-    ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
-    : []
-  )
-];
 
-// Log per debug
-console.log('🌐 CORS Origins consentiti:', allowedOrigins);
 
-// Abilita CORS con gestione dinamica degli origins
-app.use(cors({
-  origin: (origin, callback) => {
-    // Permetti richieste senza origin (Postman, curl, app mobile)
-    if (!origin) {
-      console.log('✅ CORS: Richiesta senza origin (consentita)');
-      return callback(null, true);
-    }
-    
-    if (allowedOrigins.includes(origin)) {
-      console.log('✅ CORS: Origin consentito:', origin);
-      callback(null, true);
-    } else {
-      console.log('❌ CORS: Origin bloccato:', origin);
-      console.log('   Origins consentiti:', allowedOrigins);
-      callback(new Error(`CORS: Origin ${origin} non autorizzato`));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+// Abilita CORS
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
 // Aumenta il limite per le immagini base64 (10MB)
 app.use(express.json({ limit: "10mb" }));
