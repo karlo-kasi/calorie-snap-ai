@@ -47,6 +47,8 @@ coverage
 mongodb_data/
 
 # Documentation (opzionale - decommentare se non vuoi committarli)
-# /CLAUDE.md
-# /API_ENDPOINTS_FINAL.md
-# /DEBUG_MEALS.md
+/CLAUDE.md
+/API_ENDPOINTS_FINAL.md
+/DEBUG_MEALS.md
+/docker-validate.sh
+/DOCKER.md
