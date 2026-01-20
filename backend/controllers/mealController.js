@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Meal from "../models/Meal.js";
 import User from "../models/User.js";
 import { analyzeFoodImage } from "../services/aiService.js";
@@ -199,8 +200,6 @@ export const getTodayMeals = async (req, res, next) => {
     const remaining = user.goals.targetCalories - stats.totalCalories;
 
     // Calcola giorni attivi (giorni con almeno un pasto)
-    const mongoose = require('mongoose');
-
     console.log("🔍 DEBUG getTodayMeals - userId:", userId, "tipo:", typeof userId);
 
     const activeDaysResult = await Meal.aggregate([
