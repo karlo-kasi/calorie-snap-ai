@@ -295,7 +295,7 @@ export const Login = () => {
             </TabsContent>
           </Tabs>
 
-          {/* Divider */}
+          {/* Divider 
           <div className="relative my-3">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t" />
@@ -305,9 +305,9 @@ export const Login = () => {
                 Oppure continua con
               </span>
             </div>
-          </div>
+          </div>*/}
 
-          {/* Social Login */}
+          {/* Social Login 
           <div className="grid grid-cols-2 gap-2.5">
             <Button variant="outline" className="w-full h-9 text-sm" type="button">
               <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
@@ -334,7 +334,7 @@ export const Login = () => {
               <Apple className="mr-2 h-4 w-4" />
               Apple
             </Button>
-          </div>
+          </div>*/}
 
           {/* Footer */}
           <p className="text-center text-xs text-muted-foreground mt-3">
