@@ -14,11 +14,34 @@ const app = express();
 
 
 // Abilita CORS
+const allowedOrigins = [
+  "https://calorie-snap-ai.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:8080",
+  "http://localhost:3000"
+];
+
 app.use(
   cors({
-    origin: "*",
+    origin: function (origin, callback) {
+      // Permetti richieste senza origin (come Postman o curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.log("⚠️ CORS blocked origin:", origin);
+        callback(null, true); // Permetti comunque per debug, cambia in callback(new Error('CORS')) per bloccare
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// Handle preflight requests
+app.options("*", cors());
 
 // Aumenta il limite per le immagini base64 (10MB)
 app.use(express.json({ limit: "10mb" }));
