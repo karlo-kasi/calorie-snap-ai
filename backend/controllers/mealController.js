@@ -197,7 +197,8 @@ export const getTodayMeals = async (req, res, next) => {
 
     // Opzionale: prendi target dall'utente per calcolare rimanenti
     const user = await User.findById(userId).select("goals.targetCalories");
-    const remaining = user.goals.targetCalories - stats.totalCalories;
+    const targetCalories = user?.goals?.targetCalories || 0;
+    const remaining = targetCalories - stats.totalCalories;
 
     // Calcola giorni attivi (giorni con almeno un pasto)
     console.log("🔍 DEBUG getTodayMeals - userId:", userId, "tipo:", typeof userId);
@@ -234,7 +235,7 @@ export const getTodayMeals = async (req, res, next) => {
           fats: Math.round(stats.totalFats),
         },
         // Aggiungi questi se vuoi includere target e rimanenti:
-        target: user.goals.targetCalories,
+        target: targetCalories,
         remaining: remaining,
         activeDays: activeDays,
       },
