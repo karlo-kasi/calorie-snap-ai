@@ -118,23 +118,6 @@ Interfaccia pulita e moderna con dark mode, animazioni fluide e design responsiv
 
 ---
 
-## 📸 Demo
-
-> **Nota:** Le GIF/screenshot verranno aggiunte nella cartella `docs/images/`
-
-### Screenshots Richiesti
-
-Crea le seguenti immagini e salvale in `docs/images/`:
-
-1. **`dashboard-preview.png`** - Screenshot della dashboard principale (hero image)
-2. **`ai-analysis-demo.gif`** - GIF che mostra il processo di analisi AI di un pasto
-3. **`dashboard-demo.gif`** - GIF della dashboard con statistiche animate
-4. **`diary-demo.gif`** - GIF della navigazione nel diario alimentare
-5. **`dark-mode-demo.png`** - Screenshot comparativo light/dark mode
-6. **`mobile-responsive.png`** - Screenshot responsive su mobile
-
----
-
 ## 🏗️ Architettura
 
 <div align="center">
@@ -466,3 +449,4 @@ OPENAI_API_KEY=sk-xxx               # Opzionale (fallback)
 *CalorieSnap AI © 2024 - Tutti i diritti riservati*
 
 </div>
+
