@@ -10,7 +10,6 @@
 [![Node](https://img.shields.io/badge/node-%3E%3D20.0.0-green?style=for-the-badge&logo=node.js)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen?style=for-the-badge)](LICENSE)
 
 [📸 Demo](#-demo) • [✨ Features](#-caratteristiche-principali) • [🚀 Quick Start](#-quick-start) • [📚 Docs](#-documentazione) • [🤝 Contributing](#-contribuire)
 
@@ -449,4 +448,5 @@ OPENAI_API_KEY=sk-xxx               # Opzionale (fallback)
 *CalorieSnap AI © 2024 - Tutti i diritti riservati*
 
 </div>
+
 
